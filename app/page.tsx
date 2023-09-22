@@ -8,7 +8,7 @@ import TableOverview from "./components/TableOverview/TableOverview";
 
 export default function Home() {
   return (
-    <main className="bg-[#F3F5F9] dark:bg-[#13121A] max-w-8xl mx-auto px-24 pt-20">
+    <main className=" dark:bg-[#13121A] max-w-8xl mx-auto px-24 pt-20">
       <header>
         <h2 className="text-xl mb-7">Your overview</h2>
       </header>
