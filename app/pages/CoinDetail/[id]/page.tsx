@@ -1,105 +1,84 @@
-'use client'
-import React from 'react'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { useAppSelector } from '@/app/store/store'
+"use client";
+import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "@/app/store/store";
 
 type Params = {
   params: {
-    id: string
-  }
-}
+    id: string;
+  };
+};
 type CoinDetailProps = {
-  name: string
-  symbol: string
-  links: { homepage: string[]; blockchain_site: string[] } // blockchain_site first,second,third index of the array of the links
-  image: { small: string }
+  name: string;
+  symbol: string;
+  links: { homepage: string[]; blockchain_site: string[] }; // blockchain_site first,second,third index of the array of the links
+  image: { small: string };
   market_data: {
-    current_price: { usd: number }
-    ath: { usd: number }
-    ath_date: { usd: string }
-    ath_change_percentage: { usd: number }
-    atl: { usd: number }
-    atl_change_percentage: { usd: number }
-    atl_date: { usd: string }
-    price_change_percentage_24h: number
-    market_cap: { usd: number }
-    market_cap_change_percentage_24h: number
-    fully_diluted_valuation: { usd: number }
-    total_volume: { usd: number }
-    circulating_supply: number
-    max_supply: number | null // if null = infinity supply
-  }
-  description: { en: string }
-}
+    current_price: { usd: number };
+    ath: { usd: number };
+    ath_date: { usd: string };
+    ath_change_percentage: { usd: number };
+    atl: { usd: number };
+    atl_change_percentage: { usd: number };
+    atl_date: { usd: string };
+    price_change_percentage_24h: number;
+    market_cap: { usd: number };
+    market_cap_change_percentage_24h: number;
+    fully_diluted_valuation: { usd: number };
+    total_volume: { usd: number };
+    circulating_supply: number;
+    max_supply: number | null; // if null = infinity supply
+  };
+  description: { en: string };
+};
 
 const CoinPage = ({ params }: Params) => {
-  const [coinDetail, setCoinDetail] = useState<CoinDetailProps | null>(null)
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('USD')
-  const [isSwapped, setIsSwapped] = useState<boolean>(false)
-  const [basePrice, setBasePrice] = useState<string | null>('1')
-  const [coinPrice, setCoinPrice] = useState<string | null>('1')
-  const { id } = params
+  const [coinDetail, setCoinDetail] = useState<CoinDetailProps | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
+  const [isSwapped, setIsSwapped] = useState<boolean>(false);
+  const [basePrice, setBasePrice] = useState<string | null>("1");
+  const [coinPrice, setCoinPrice] = useState<string | null>("1");
+  const { id } = params;
 
   const fetchData = async () => {
     try {
       const { data } = await axios.get(
         `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=true&community_data=true&developer_data=false&sparkline=false`
-      )
-      setCoinDetail(data)
+      );
+      setCoinDetail(data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
-  const currentCurrency = useAppSelector(state => state.currency.currencies)
+  };
+  const currentCurrency = useAppSelector(state => state.currency.currencies);
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   if (coinDetail === null) {
     return (
       <div>
         <p>Loading...</p>
       </div>
-    )
+    );
   }
-
-  // Then we grab the rate when we use the find method if it matches with the currentCurrency that we have selected
-  const currencyRate =
-    currencies.find(currency => currency.region === currentCurrency)?.rate || 1
-
-  const selectedCurrencyObj = currencies.find(
-    currency => currency.region === currentCurrency
-  )
-
-  const currencySymbol =
-    selectedCurrencyObj?.symbol === 'PiCurrencyGbpLight'
-      ? '£'
-      : selectedCurrencyObj?.symbol === 'BiEuro'
-      ? '€'
-      : '$'
-
-  const convertBaseCurrency = Number(basePrice) * currencyRate
-
-  const convertCoinCurrency =
-    currencySymbol +
-    convertBaseCurrency / coinDetail.market_data.current_price.usd
 
   const handleBaseChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value
-    setBasePrice(value)
-  }
+    const value = e.target.value;
+    setBasePrice(value);
+  };
   const handleCoinChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value
-    setCoinPrice(value)
-  }
+    const value = e.target.value;
+    setCoinPrice(value);
+  };
 
   const handleSwitchInput = (): void => {
-    setIsSwapped(prevState => !prevState)
-  }
+    setIsSwapped(prevState => !prevState);
+  };
 
-  const { image, name, symbol, links, market_data, description } = coinDetail
+  const { image, name, symbol, links, market_data, description } = coinDetail;
   const {
     price_change_percentage_24h,
     market_cap,
@@ -107,7 +86,7 @@ const CoinPage = ({ params }: Params) => {
     total_volume,
     circulating_supply,
     max_supply,
-  } = market_data
+  } = market_data;
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-4 items-center">
@@ -145,7 +124,7 @@ const CoinPage = ({ params }: Params) => {
           TotalVolume/Market_cap{Number(total_volume) / Number(market_cap)}
         </span>
         <span>{circulating_supply}</span>
-        <span>{max_supply === null ? 'infinity' : max_supply}</span>
+        <span>{max_supply === null ? "infinity" : max_supply}</span>
         <span>progress bar</span>
       </div>
       <div>
@@ -158,13 +137,12 @@ const CoinPage = ({ params }: Params) => {
           <>
             <div className="flex gap-2">
               <label htmlFor={currentCurrency}>
-                {!currentCurrency ? 'USD' : currentCurrency}
+                {!currentCurrency ? "USD" : currentCurrency}
               </label>
-              <span>{currencySymbol}</span>
+
               <input
                 id={currentCurrency}
                 type="text"
-                value={convertBaseCurrency}
                 onChange={handleBaseChange}
                 name={currentCurrency}
               />
@@ -177,7 +155,6 @@ const CoinPage = ({ params }: Params) => {
                 id={symbol}
                 type="text"
                 placeholder="btc"
-                value={convertCoinCurrency}
                 name={name}
                 onChange={handleCoinChange}
               />
@@ -192,20 +169,18 @@ const CoinPage = ({ params }: Params) => {
                 id={symbol}
                 type="text"
                 placeholder="btc"
-                value={convertCoinCurrency}
                 name={name}
                 onChange={handleCoinChange}
               />
             </div>
             <div className="flex gap-2">
               <label htmlFor={currentCurrency}>
-                {!currentCurrency ? 'USD' : currentCurrency}
+                {!currentCurrency ? "USD" : currentCurrency}
               </label>
-              <span>{currencySymbol}</span>
+
               <input
                 id={currentCurrency}
                 type="text"
-                value={convertBaseCurrency}
                 onChange={handleBaseChange}
                 name={currentCurrency}
               />
@@ -214,7 +189,7 @@ const CoinPage = ({ params }: Params) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CoinPage
+export default CoinPage;
