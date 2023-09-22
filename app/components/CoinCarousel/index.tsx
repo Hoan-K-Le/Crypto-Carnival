@@ -10,8 +10,6 @@ const CoinCarousel = () => {
   const coinsData = useAppSelector(state => state.coins.coins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   useEffect(() => {}, [coinsData]);
-  // console.log(coinsData);
-  // console.log(selectCoin);
   const slideLeft = () => {
     const slider = document.getElementById("slider");
     if (slider) {
