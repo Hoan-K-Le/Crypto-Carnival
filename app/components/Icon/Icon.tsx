@@ -11,6 +11,7 @@ import {
   BiDollar,
   BiEuro,
   BiHomeAlt2,
+  BiGitCompare,
 } from "react-icons/bi";
 
 import { RiHome5Fill } from "react-icons/ri";
@@ -42,6 +43,7 @@ const icons: Icons = {
   portfolioSolid: BsStack,
   home: BiHomeAlt2,
   homeSolid: RiHome5Fill,
+  compare: BiGitCompare,
 };
 
 type props = {
