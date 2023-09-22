@@ -5,6 +5,7 @@ import Providers from "./providers";
 import NavBar from "./components/NavBar/NavBar";
 import { ReduxProvider } from "./store/provider";
 import  CoinBar  from "./components/CoinBar";
+import CoinsConverter from "./components/CoinsConverter";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Providers>  
           <CoinBar/>   
         <NavBar />
+        <CoinsConverter />
           {children}
         </Providers>
         </ReduxProvider>
