@@ -55,8 +55,8 @@ export default function BarChart() {
     fetchChartData();
   }, []);
 
-  const currentTheme = localStorage.getItem("theme");
-  const backgroundColor = currentTheme === "dark" ? "#3D63EC" : "#00FC2A";
+  // const currentTheme = localStorage.getItem("theme");
+  // const backgroundColor = currentTheme === "dark" ? "#3D63EC" : "#00FC2A";
 
   const data = {
     labels: bitcoinVolumeDates.map(date => new Date(date).getDate()),
@@ -65,7 +65,7 @@ export default function BarChart() {
         fill: true,
         label: "Volumes",
         data: bitcoinPriceVolumes,
-        backgroundColor: backgroundColor,
+        // backgroundColor: backgroundColor,
       },
     ],
   };

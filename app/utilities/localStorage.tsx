@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 export const getLocalStorage = (str: string) => {
   try {
     if (typeof window !== "undefined") {

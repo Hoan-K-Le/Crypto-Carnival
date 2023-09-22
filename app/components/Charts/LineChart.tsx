@@ -54,12 +54,12 @@ export default function LineChart() {
     fetchChartData();
   }, []);
 
-  const currentTheme = localStorage.getItem("theme");
-  const borderColor = currentTheme === "dark" ? "#00FC2A" : "#3D63EC";
+  // const currentTheme = localStorage.getItem("theme");
+  // const borderColor = currentTheme === "dark" ? "#00FC2A" : "#3D63EC";
   const gradientColorsDark = ["#192021", "#23322E", "#37413F"];
   const gradientColorsLight = ["#F9FAFF", "#ECF0FD", "#D9E1FB"];
-  const gradientColor =
-    currentTheme === "dark" ? gradientColorsDark : gradientColorsLight;
+  // const gradientColor =
+  //   currentTheme === "dark" ? gradientColorsDark : gradientColorsLight;
 
   const data = {
     labels: bitcoinPriceDates.map(date => new Date(date).getDate()),
@@ -68,11 +68,11 @@ export default function LineChart() {
         fill: true,
         label: "Prices",
         data: bitcoinPrices,
-        borderColor: borderColor,
+        // borderColor: borderColor,
         pointStyle: "circle",
         pointRadius: 0,
         tension: 0.4,
-        backgroundColor: gradientColor,
+        // backgroundColor: gradientColor,
       },
     ],
   };
