@@ -17,8 +17,8 @@ const CoinsConverter = () => {
   };
 
   return (
-    <div className="flex m-10">
-      <div className="bg-white flex">
+    <div className="flex my-12 px-24">
+      <div className="bg-white rounded-xl dark:bg-[#191925] dark:text-[#ffffff] flex">
         <button
           onClick={handleCoinsClick}
           className={`${
