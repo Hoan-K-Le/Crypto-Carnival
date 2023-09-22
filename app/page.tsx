@@ -6,7 +6,8 @@ import TableOverview from "./components/TableOverview/TableOverview";
 
 export default function Home() {
   return (
-    <main className="bg-[#F3F5F9] dark:bg-[#13121A]  px-24 pt-10">
+    <main className=" dark:bg-[#13121A]  px-24 pt-10">
+
       <div className="flex gap-11 mb-16">
         <ChartContainer name="BTC" price="13.431 mln" date="Aug 25, 2023">
           <LineChart />
