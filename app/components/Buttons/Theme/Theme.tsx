@@ -14,11 +14,14 @@ export default function ThemeButton() {
   if (!mounted) {
     return null;
   }
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   return (
     <button
       className="bg-[#CCCCFA] bg-opacity-40 text-[#424286] dark:bg-[#191925] dark:text-white da p-3.5 rounded-lg"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
     >
       {theme === "dark" ? (
         <Icon iconVariant="sun" />
