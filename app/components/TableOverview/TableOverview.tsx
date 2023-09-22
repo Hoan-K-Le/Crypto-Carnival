@@ -12,7 +12,6 @@ import CoinRank from "./CoinRank";
 import CoinPrice from "./CoinPrice";
 import { TableDataProps } from "./TableDataProps";
 import { fetchCoins } from "@/app/store/CoinsData";
-import Api from "../api/ApiFetch";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "@/app/store/store";
