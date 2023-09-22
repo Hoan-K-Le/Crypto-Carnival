@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Icon from "../Icon/Icon";
-import { useAppSelector } from "@/app/store/store";
+import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { updateSelectedCurrency } from "@/app/store/CurrencyReducer";
 import { useDispatch } from "react-redux";
 import { fetchCoins } from "@/app/store/CoinsData";

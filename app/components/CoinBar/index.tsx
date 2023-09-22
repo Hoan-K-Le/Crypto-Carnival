@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "@/app/store/store";
+import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { FetchGeneralCoins } from "@/app/store/CoinsBarData";
 import { GlobalDataType } from "@/app/store/CoinsBarData";
 import Icon from "../Icon/Icon";
