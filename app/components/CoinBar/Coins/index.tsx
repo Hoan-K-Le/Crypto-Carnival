@@ -1,6 +1,7 @@
 import React from "react";
 import Icon from "../../Icon/Icon";
 import { GlobalDataType } from "@/app/store/CoinsBarData";
+
 type CoinProps = {
   getData: { data: { active_cryptocurrencies: number } };
 };

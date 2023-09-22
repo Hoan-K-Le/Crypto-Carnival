@@ -10,6 +10,7 @@ import Exchange from "./Exchange";
 import GeneralMarketCap from "./GeneralMarketCap";
 import GeneralTotalVolume from "./GeneralTotalVolume";
 import GeneralAvg from "./GeneralAvg";
+import { formatNumber } from "@/app/utilities/formatNumber";
 
 const CoinBar = () => {
   const [dataFetched, setDataFetched] = useState(false);
@@ -26,20 +27,6 @@ const CoinBar = () => {
   if (!dataFetched) {
     return <div>Loading...</div>;
   }
-
-  const formatNumber = (number: number): string => {
-    if (number >= 1e12) {
-      return (number / 1e12).toFixed(1) + " T";
-    } else if (number >= 1e9) {
-      return (number / 1e9).toFixed(1) + "B";
-    } else if (number >= 1e6) {
-      return (number / 1e6).toFixed(1) + "M";
-    } else if (number >= 1e3) {
-      return (number / 1e3).toFixed(1) + "K";
-    }
-
-    return number.toString();
-  };
 
   // active_currency,markets,total_volume, total_market_cap
   return (

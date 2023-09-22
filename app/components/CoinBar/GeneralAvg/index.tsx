@@ -11,7 +11,6 @@ const GeneralAvg = ({ getData }: GeneralAvgProps) => {
   return (
     <>
       <div className="flex gap-2 items-center">
-        {/* <img className="h-[25px] w-[25px]" src={coinSymbol[0]?.image} /> */}
         <img
           className="h-[25px] w-[25px]"
           src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=026"
