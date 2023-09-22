@@ -82,6 +82,7 @@ const NavBar = () => {
         {pages &&
           pages.map(page => (
             <button
+              key={page.id}
               onClick={() => setActivePage(page.id)}
               className="flex gap-2"
             >
@@ -129,7 +130,7 @@ const NavBar = () => {
                   .filter((coin, i) => i < 10)
                   .map((coin: any, i) => (
                     <ul
-                      key={`${Math.random() + coin.id}`}
+                      key={coin.id}
                       className=" flex items-center justify-center flex-col"
                     >
                       <PageLink href={`../CoinDetail/${coin.id}`}>
