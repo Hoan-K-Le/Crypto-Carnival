@@ -1,9 +1,11 @@
 "use client";
 export const getLocalStorage = (str: string) => {
   try {
-    const item = localStorage.getItem(str);
-    if (item !== "undefined" && item !== null) {
-      return item;
+    if (typeof window !== "undefined") {
+      const item = localStorage.getItem(str);
+      if (item !== "undefined" && item !== null) {
+        return item;
+      }
     }
   } catch (error) {
     console.error(error);
