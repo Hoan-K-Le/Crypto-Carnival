@@ -16,7 +16,8 @@ const config: Config = {
         slate700: "#2C2F36",
         slate800: "#1F2128",
         slate900: "#191b1f",
-        'lightning': "#1e1932"
+        'lightning': "#1e1932",
+        carousel: '#7878FA'
       },
       maxWidth: {
         "3.5xl": "52.1875rem",

@@ -1,12 +1,12 @@
-import React from 'react'
-import Icon from '../../Icon/Icon'
-import { TableDataProps } from '../TableDataProps'
+import React from "react";
+import Icon from "../../Icon/Icon";
+import { TableDataProps } from "../TableDataProps";
 const CoinAvg = ({
   coin,
   getAverageData,
 }: {
-  coin: TableDataProps
-  getAverageData: (number: number) => string
+  coin: TableDataProps;
+  getAverageData: (number: number) => string;
 }) => {
   return (
     <>
@@ -61,7 +61,7 @@ const CoinAvg = ({
         </div>
       </td>
     </>
-  )
-}
+  );
+};
 
-export default CoinAvg
+export default CoinAvg;

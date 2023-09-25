@@ -11,7 +11,6 @@ import VolumeMarket from "./VolumeMarket";
 import CoinRank from "./CoinRank";
 import CoinPrice from "./CoinPrice";
 import { TableDataProps } from "./TableDataProps";
-import { fetchCoins } from "@/app/store/CoinsData";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "@/app/store/store";
@@ -65,7 +64,7 @@ export default function TableOverview() {
           borderColor: avgData < 0 ? "red" : "green",
           pointRadius: 0,
           borderWidth: 2,
-          tension: 0.4,
+          lineTension: 0.2,
           pointBackgroundColor: "transparent",
           pointBorderColor: "transparent",
           hoverPointRadius: 0,
@@ -138,7 +137,7 @@ export default function TableOverview() {
       {/* Table Overview */}
       <h2 className="">Your Overview</h2>
       {/* Container wrapper */}
-      <div className="dark:bg-slate900 bg-white p-4 mt-4 rounded-xl relative h-[600px] scrollbar-thin scrollbar-slate700 overflow-y-auto ">
+      <div className="dark:bg-slate900 mt-4 rounded-xl relative h-[600px] scrollbar-thin scrollbar-slate700 overflow-y-auto ">
         {/* Table */}
         {/* <InfiniteScroll
           dataLength={coins.length}
@@ -148,19 +147,15 @@ export default function TableOverview() {
         > */}
         <table className="w-full relative">
           <TableHeader />
-          <tbody className="">
+          <tbody>
             {coinsData &&
               coinsData.map((coin: TableDataProps) => (
-                <tr
-                  key={`${Math.random() + coin.id}`}
-                  className="border-b-[1px] w-full"
-                >
+                <tr key={coin.id} className="shadow-lg rounded-2xl">
                   <CoinRank coin={coin} />
                   <CoinName coin={coin} />
                   <CoinPrice coin={coin} getSymbol={getSymbol} />
                   <CoinAvg coin={coin} getAverageData={getAverageData} />
-
-                  <td className="py-4 w-1/6">
+                  <td className="w-1/6">
                     <div className="flex flex-col w-4/5">
                       <VolumeMarket
                         symbol={symbol}
@@ -171,7 +166,7 @@ export default function TableOverview() {
                     </div>
                   </td>
 
-                  <td className="py-4 w-1/6">
+                  <td className="w-1/6">
                     <div className="w-4/5 flex flex-col">
                       <CirculatingSupply
                         symbol={symbol}
@@ -181,7 +176,7 @@ export default function TableOverview() {
                       <ProgressBar coin={coin} progressBar={progressBar} />
                     </div>
                   </td>
-                  <td className="">
+                  <td>
                     <div className="w-[150px] h-[100px] flex items-end">
                       <Line
                         data={makeChart(

@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.className}  dark:bg-[#13121A] bg-[#F3F5F9]`}>
+      <body className={`${poppins.className} text-[#424286]  dark:bg-[#13121A] bg-[#F3F5F9]`}>
         <ReduxProvider>
         <Providers>  
           <CoinBar/>   
