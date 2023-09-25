@@ -38,7 +38,7 @@ const CoinCarousel = () => {
   const matchCoin = (coin: any) => {
     return selectCoin.includes(coin) ? "bg-carousel bg-opacity-50" : "";
   };
-  console.log(selectCoin);
+
   return (
     <div className="relative flex items-center mb-5">
       <MdChevronLeft
