@@ -35,7 +35,7 @@ const options = {
 export default function BarChart() {
   const [bitcoinPriceVolumes, setBitcoinPriceVolumes] = useState<number[]>([]);
   const [bitcoinVolumeDates, setBitcoinVolumeDates] = useState<number[]>([]);
-  const [currentData, setCurrentData] = useState<string>([]);
+  const [currentData, setCurrentData] = useState<[]>([]);
   const [
     gradientBackground,
     setGradientBackground,
