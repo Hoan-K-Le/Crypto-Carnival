@@ -9,7 +9,6 @@ const CoinCarousel = () => {
   const [selectCoin, setSelectCoin] = useState<any>([]);
   const coinsData = useAppSelector(state => state.coins.coins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
-  useEffect(() => {}, [coinsData]);
   const slideLeft = () => {
     const slider = document.getElementById("slider");
     if (slider) {
@@ -36,9 +35,10 @@ const CoinCarousel = () => {
   };
 
   const matchCoin = (coin: any) => {
-    return selectCoin.includes(coin) ? "bg-carousel bg-opacity-50" : "";
+    return selectCoin.includes(coin) ? "bg-carousel bg-opacity-50" : "bg-white";
   };
 
+  useEffect(() => {}, [coinsData, selectCoin]);
   return (
     <div className="relative flex items-center mb-5">
       <MdChevronLeft
@@ -56,7 +56,7 @@ const CoinCarousel = () => {
               onClick={() => handleCoinClick(coin)}
               className={`${matchCoin(
                 coin
-              )} flex items-center cursor-pointer rounded-xl bg-white shadow-md px-5 py-3 gap-3`}
+              )} flex items-center cursor-pointer rounded-xl  shadow-md px-5 py-3 gap-3`}
             >
               <img
                 src={coin.image}
