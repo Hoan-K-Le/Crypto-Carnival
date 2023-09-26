@@ -87,7 +87,7 @@ export default function BarChart() {
       gradient.addColorStop(1, "rgba(179, 116, 242, 0.01)");
       setGradientBackground(gradient);
     }
-  }, []);
+  }, [currentCurrency]);
 
   const data = {
     labels: bitcoinVolumeDates.map(date => new Date(date).getDate()),
