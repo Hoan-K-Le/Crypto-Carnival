@@ -50,7 +50,7 @@ const CoinCarousel = () => {
         id="slider"
         className="flex overflow-hidden scroll-smooth scrollbar-hide"
       >
-        {coinsData.map((coin, index) => (
+        {coinsData?.map((coin, index) => (
           <div key={coin.id} className="flex-shrink-0 p-2">
             <div
               onClick={() => handleCoinClick(coin)}
@@ -67,7 +67,7 @@ const CoinCarousel = () => {
                 <p>{coin.name}</p>
                 <div className={`flex items-center gap-3`}>
                   <span className="text-[#424286] text-opacity-80">
-                    {coin.current_price.toFixed(2)}
+                    {coin.current_price ? coin.current_price.toFixed(2) : 1}
                     {getSymbol(currentCurrency)}
                   </span>
                   <span
@@ -80,7 +80,10 @@ const CoinCarousel = () => {
                     ) : (
                       <Icon iconVariant="arrowUp" />
                     )}
-                    {coin.price_change_percentage_24h_in_currency.toFixed(2)}%
+                    {coin.price_change_percentage_24h_in_currency
+                      ? coin.price_change_percentage_24h_in_currency.toFixed(2)
+                      : 1}
+                    %
                   </span>
                 </div>
               </div>
