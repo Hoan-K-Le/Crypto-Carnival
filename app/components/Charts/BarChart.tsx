@@ -40,17 +40,17 @@ export default function BarChart() {
     gradientBackground,
     setGradientBackground,
   ] = useState<CanvasGradient | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const isLoading = useAppSelector(state => state.coinGraph.isLoading);
-  const dispatch = useDispatch<AppDispatch>();
+  const currentCoinOne = useAppSelector(state => state.coinOne.coinOne);
   const chartRef = useRef();
   const fetchChartData = async () => {
     try {
-      const btc = "bitcoin";
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
-          name: btc,
+          name: currentCoinOne,
         })
       );
 
@@ -88,7 +88,7 @@ export default function BarChart() {
       gradient.addColorStop(1, "rgba(179, 116, 242, 0.01)");
       setGradientBackground(gradient);
     }
-  }, [currentCurrency]);
+  }, [currentCurrency, currentCoinOne]);
 
   const data = {
     labels: bitcoinVolumeDates.map(date => new Date(date).getDate()),

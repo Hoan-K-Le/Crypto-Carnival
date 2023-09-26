@@ -44,15 +44,16 @@ export default function LineChart() {
     setGradientBackground,
   ] = useState<CanvasGradient | null>(null);
   const isLoading = useAppSelector(state => state.coinGraph.isLoading);
+  const currentCoinOne = useAppSelector(state => state.coinOne.coinOne);
+  const currentCoinOneSymbol = useAppSelector(state => state.coinOne.symbol);
   const dispatch = useDispatch<AppDispatch>();
   const chartRef = useRef();
   const fetchChartData = async () => {
     try {
-      const btc = "bitcoin";
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
-          name: btc,
+          name: currentCoinOne,
         })
       );
 
@@ -90,7 +91,7 @@ export default function LineChart() {
       gradient.addColorStop(1, "rgba(116, 116, 242, 0.01)");
       setGradientBackground(gradient);
     }
-  }, [currentCurrency]);
+  }, [currentCurrency, currentCoinOne]);
 
   const data = {
     labels: bitcoinPriceDates.map(date => new Date(date).getDate()),
@@ -111,7 +112,9 @@ export default function LineChart() {
   return (
     <div className="w-full h-[400px]">
       <div className="flex flex-col gap-2">
-        <p className="text-xl text-[#191932]">Bitcoin (BTC)</p>
+        <p className="text-xl uppercase text-[#191932]">
+          {currentCoinOne} ({currentCoinOneSymbol})
+        </p>
         <p className="text-3xl text-[#181825]">
           {currentPrice.length > 0
             ? Number(currentPrice[0][1]).toLocaleString("en-US")

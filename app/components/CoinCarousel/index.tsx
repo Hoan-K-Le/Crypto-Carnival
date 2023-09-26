@@ -1,14 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { useAppSelector } from "@/app/store/store";
+import { useAppSelector, AppDispatch } from "@/app/store/store";
 import getSymbol from "@/app/utilities/symbol";
 import getAvg from "@/app/utilities/getAvg";
 import Icon from "../Icon/Icon";
-
+import { useDispatch } from "react-redux";
+import {
+  updateSelectedCoinOne,
+  updateSelectCoinOneSymbol,
+} from "@/app/store/SelectCoinReducer";
 const CoinCarousel = () => {
   const [selectCoin, setSelectCoin] = useState<any>([]);
   const coinsData = useAppSelector(state => state.coins.coins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
+  const currentCoin = useAppSelector(state => state.coinOne.coinOne);
+  const dispatch = useDispatch<AppDispatch>();
   const slideLeft = () => {
     const slider = document.getElementById("slider");
     if (slider) {
@@ -28,8 +34,13 @@ const CoinCarousel = () => {
     } else {
       if (selectCoin.length >= 2) {
         setSelectCoin([selectCoin[1], coin]);
+        dispatch(updateSelectedCoinOne(selectCoin[1].id));
+        dispatch(updateSelectCoinOneSymbol(selectCoin[1].symbol));
       } else {
-        setSelectCoin([...selectCoin, coin]);
+        const newSelectCoin = [...selectCoin, coin];
+        setSelectCoin(newSelectCoin);
+        dispatch(updateSelectedCoinOne(newSelectCoin[0].id));
+        dispatch(updateSelectCoinOneSymbol(newSelectCoin[0].symbol));
       }
     }
   };
