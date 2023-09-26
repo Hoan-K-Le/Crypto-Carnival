@@ -23,7 +23,12 @@ const CoinAvg = ({
               <Icon iconVariant="arrowUp" />
             )}
           </span>
-          <span>{coin.price_change_percentage_1h_in_currency.toFixed(2)}%</span>
+          <span>
+            {coin.price_change_percentage_1h_in_currency
+              ? coin.price_change_percentage_1h_in_currency.toFixed(2)
+              : 1}
+            %
+          </span>
         </div>
       </td>
       <td
@@ -40,7 +45,10 @@ const CoinAvg = ({
             )}
           </span>
           <span>
-            {coin.price_change_percentage_24h_in_currency.toFixed(2)}%
+            {coin.price_change_percentage_24h_in_currency
+              ? coin.price_change_percentage_24h_in_currency.toFixed(2)
+              : 1}
+            %
           </span>
         </div>
       </td>
@@ -57,7 +65,12 @@ const CoinAvg = ({
               <Icon iconVariant="arrowUp" />
             )}
           </span>
-          <span>{coin.price_change_percentage_7d_in_currency.toFixed(2)}%</span>
+          <span>
+            {coin.price_change_percentage_7d_in_currency
+              ? coin.price_change_percentage_7d_in_currency.toFixed(2)
+              : 1}
+            %
+          </span>
         </div>
       </td>
     </>

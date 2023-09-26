@@ -1,4 +1,7 @@
 export const formatNumber = (number: number): string => {
+  if (number < 0) {
+    return `-${formatNumber(-number)}`;
+  }
   if (number >= 1e12) {
     return (number / 1e12).toFixed(1) + " T";
   } else if (number >= 1e9) {
