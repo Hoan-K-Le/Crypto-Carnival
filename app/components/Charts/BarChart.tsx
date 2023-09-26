@@ -62,6 +62,7 @@ export default function BarChart() {
             return currentDate.toDateString() === volumeDate.toDateString();
           }
         );
+
         setCurrentData(getCurrentData);
         const volume = chartData.payload.total_volumes.map(
           (volume: [number, number]) => volume[1]
@@ -112,7 +113,7 @@ export default function BarChart() {
         </p>
         <p className="text-[#424286]">
           {currentData.length > 0
-            ? new Date(currentData[0][1] as number).toDateString()
+            ? new Date(currentData[0][0] as number).toDateString()
             : "Loading..."}
         </p>
       </div>
