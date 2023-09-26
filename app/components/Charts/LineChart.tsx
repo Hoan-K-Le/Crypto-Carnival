@@ -90,7 +90,7 @@ export default function LineChart() {
       gradient.addColorStop(1, "rgba(116, 116, 242, 0.01)");
       setGradientBackground(gradient);
     }
-  }, []);
+  }, [currentCurrency]);
 
   const data = {
     labels: bitcoinPriceDates.map(date => new Date(date).getDate()),
