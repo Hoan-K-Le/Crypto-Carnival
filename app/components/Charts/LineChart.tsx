@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,8 +9,10 @@ import {
   LineElement,
   Filler,
 } from "chart.js";
-import { getBitcoinData } from "@/app/contexts/Charts";
-import { useAppSelector } from "@/app/store/store";
+
+import { useAppSelector, AppDispatch } from "@/app/store/store";
+import { useDispatch } from "react-redux";
+import { fetchGraphData } from "@/app/store/ChartSelectorData";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
 const options = {
@@ -23,11 +25,11 @@ const options = {
   scales: {
     x: {
       grid: {
-        display: false, // Removes the background grid lines for X-axis
+        display: false,
       },
     },
     y: {
-      display: false, // Removes the numbers for the y-axis
+      display: false,
     },
   },
 };
@@ -35,16 +37,44 @@ const options = {
 export default function LineChart() {
   const [bitcoinPrices, setBitcoinPrices] = useState<number[]>([]);
   const [bitcoinPriceDates, setBitcoinPriceDates] = useState<number[]>([]);
+  const [currentPrice, setCurrentPrice] = useState([]);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
+  const [
+    gradientBackground,
+    setGradientBackground,
+  ] = useState<CanvasGradient | null>(null);
+  const isLoading = useAppSelector(state => state.coinGraph.isLoading);
+  const dispatch = useDispatch<AppDispatch>();
+  const chartRef = useRef();
   const fetchChartData = async () => {
     try {
-      const chartData = await getBitcoinData(currentCurrency);
-      const prices = chartData.prices.map(
-        (price: [number, number]) => price[1]
+      const btc = "bitcoin";
+      const chartData = await dispatch(
+        fetchGraphData({
+          currency: currentCurrency,
+          name: btc,
+        })
       );
-      const dates = chartData.prices.map((price: [number, number]) => price[0]);
-      setBitcoinPrices(prices);
-      setBitcoinPriceDates(dates);
+
+      if (fetchGraphData.fulfilled.match(chartData)) {
+        const currentDate = new Date();
+        const getCurrentData = chartData.payload.prices.filter(
+          (price: [number, number]) => {
+            const priceDate = new Date(price[0]);
+            return currentDate.toDateString() === priceDate.toDateString();
+          }
+        );
+        setCurrentPrice(getCurrentData);
+
+        const prices = chartData.payload.prices.map(
+          (price: [number, number]) => price[1]
+        );
+        const date = chartData.payload.prices.map(
+          (price: [number, number]) => price[0]
+        );
+        setBitcoinPrices(prices);
+        setBitcoinPriceDates(date);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -52,14 +82,15 @@ export default function LineChart() {
 
   useEffect(() => {
     fetchChartData();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, "rgba(116, 116, 242, 0.6)");
+      gradient.addColorStop(1, "rgba(116, 116, 242, 0.01)");
+      setGradientBackground(gradient);
+    }
   }, []);
-
-  // const currentTheme = localStorage.getItem("theme");
-  // const borderColor = currentTheme === "dark" ? "#00FC2A" : "#3D63EC";
-  const gradientColorsDark = ["#192021", "#23322E", "#37413F"];
-  const gradientColorsLight = ["#F9FAFF", "#ECF0FD", "#D9E1FB"];
-  // const gradientColor =
-  //   currentTheme === "dark" ? gradientColorsDark : gradientColorsLight;
 
   const data = {
     labels: bitcoinPriceDates.map(date => new Date(date).getDate()),
@@ -68,18 +99,36 @@ export default function LineChart() {
         fill: true,
         label: "Prices",
         data: bitcoinPrices,
-        // borderColor: borderColor,
+        borderColor: "#7878FA",
+        backgroundColor: gradientBackground as any,
         pointStyle: "circle",
         pointRadius: 0,
         tension: 0.4,
-        // backgroundColor: gradientColor,
       },
     ],
   };
 
   return (
-    <div>
-      <Line data={data} options={options} />
+    <div className="w-full h-[400px]">
+      <div className="flex flex-col gap-2">
+        <p className="text-xl text-[#191932]">Bitcoin (BTC)</p>
+        <p className="text-3xl text-[#181825]">
+          {currentPrice.length > 0
+            ? Number(currentPrice[0][1]).toLocaleString("en-US")
+            : "Loading..."}
+        </p>
+        <p className="text-[#424286]">
+          {currentPrice.length > 0
+            ? new Date(currentPrice[0][0]).toDateString()
+            : "Loading..."}
+        </p>
+      </div>
+
+      {isLoading ? (
+        <div>Linegraph Loading...</div>
+      ) : (
+        <Line ref={chartRef} data={data} options={options} />
+      )}
     </div>
   );
 }

@@ -3,12 +3,14 @@ import { useSelector, TypedUseSelectorHook } from "react-redux";
 import currencyReducer from "./CurrencyReducer";
 import coinsReducer from "./CoinsData";
 import globalCoinReducer from "./CoinsBarData";
+import coinGraphReducer from "./ChartSelectorData";
 
 export const store = configureStore({
   reducer: {
     currency: currencyReducer,
     coins: coinsReducer,
     generalCoins: globalCoinReducer,
+    coinGraph: coinGraphReducer,
   },
 });
 
