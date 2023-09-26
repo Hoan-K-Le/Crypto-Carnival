@@ -35,7 +35,7 @@ const options = {
 export default function BarChart() {
   const [bitcoinPriceVolumes, setBitcoinPriceVolumes] = useState<number[]>([]);
   const [bitcoinVolumeDates, setBitcoinVolumeDates] = useState<number[]>([]);
-  const [currentData, setCurrentData] = useState<[]>([]);
+  const [currentData, setCurrentData] = useState([]);
   const [
     gradientBackground,
     setGradientBackground,
@@ -107,12 +107,12 @@ export default function BarChart() {
         <p className="text-xl text-[#191932]">Volume 24h</p>
         <p className="text-3xl text-[#181825]">
           {currentData.length > 0
-            ? Number(currentData[0][1]).toLocaleString("en-US")
+            ? Number(currentData[0][1] as number).toLocaleString("en-US")
             : "Loading..."}
         </p>
         <p className="text-[#424286]">
           {currentData.length > 0
-            ? new Date(currentData[0][1]).toDateString()
+            ? new Date(currentData[0][1] as number).toDateString()
             : "Loading..."}
         </p>
       </div>
