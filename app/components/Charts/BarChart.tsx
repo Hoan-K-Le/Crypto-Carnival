@@ -79,7 +79,6 @@ export default function BarChart() {
   };
 
   useEffect(() => {
-    console.log(currentData);
     fetchChartData();
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
