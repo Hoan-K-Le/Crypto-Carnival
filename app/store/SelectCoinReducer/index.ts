@@ -32,10 +32,12 @@ export const coinOneReducer = coinOneSlice.reducer;
 
 interface SelectCoinTwo {
   coinTwo: string;
+  symbol: string;
 }
 
 const initialStateTwo: SelectCoinTwo = {
   coinTwo: "",
+  symbol: "",
 };
 
 export const coinTwoSlice = createSlice({
@@ -45,8 +47,43 @@ export const coinTwoSlice = createSlice({
     updateSelectedCoinTwo: (state, action: PayloadAction<string>) => {
       state.coinTwo = action.payload;
     },
+    updateSelectCoinTwoSymbol: (state, action: PayloadAction<string>) => {
+      state.symbol = action.payload;
+    },
   },
 });
 
-export const { updateSelectedCoinTwo } = coinTwoSlice.actions;
+export const {
+  updateSelectedCoinTwo,
+  updateSelectCoinTwoSymbol,
+} = coinTwoSlice.actions;
 export const coinTwoReducer = coinTwoSlice.reducer;
+
+interface SelectCoinThree {
+  coinThree: string;
+  symbol: string;
+}
+
+const initialStateThree: SelectCoinThree = {
+  coinThree: "",
+  symbol: "",
+};
+
+export const coinThreeSlice = createSlice({
+  name: "coinThree",
+  initialState: initialStateThree,
+  reducers: {
+    updateSelectedCoinThree: (state, action: PayloadAction<string>) => {
+      state.coinThree = action.payload;
+    },
+    updateSelectCoinThreeSymbol: (state, action: PayloadAction<string>) => {
+      state.symbol = action.payload;
+    },
+  },
+});
+
+export const {
+  updateSelectedCoinThree,
+  updateSelectCoinThreeSymbol,
+} = coinThreeSlice.actions;
+export const coinThreeReducer = coinThreeSlice.reducer;

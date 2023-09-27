@@ -8,12 +8,15 @@ import { useDispatch } from "react-redux";
 import {
   updateSelectedCoinOne,
   updateSelectCoinOneSymbol,
+  updateSelectedCoinTwo,
+  updateSelectCoinTwoSymbol,
+  updateSelectedCoinThree,
+  updateSelectCoinThreeSymbol,
 } from "@/app/store/SelectCoinReducer";
 const CoinCarousel = () => {
   const [selectCoin, setSelectCoin] = useState<any>([]);
   const coinsData = useAppSelector(state => state.coins.coins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
-  const currentCoin = useAppSelector(state => state.coinOne.coinOne);
   const dispatch = useDispatch<AppDispatch>();
   const slideLeft = () => {
     const slider = document.getElementById("slider");
@@ -28,20 +31,20 @@ const CoinCarousel = () => {
       slider.scrollLeft += slider.clientWidth;
     }
   };
-  const handleCoinClick = (coin: object) => {
-    if (selectCoin.includes(coin)) {
-      setSelectCoin((prevCoin: any) => prevCoin.filter((c: any) => c !== coin));
-    } else {
-      if (selectCoin.length < 3) {
-        const newSelectCoin = [...selectCoin, coin];
-        setSelectCoin(newSelectCoin);
-        console.log(newSelectCoin);
-        if (newSelectCoin.length > 0) {
-          dispatch(updateSelectedCoinOne(newSelectCoin[0].id));
-          dispatch(updateSelectCoinOneSymbol(newSelectCoin[0].symbol));
-        }
-      }
+  const handleCoinClick = (coin: any) => {
+    let newSelectCoin = [...selectCoin];
+    if (newSelectCoin.includes(coin)) {
+      newSelectCoin = newSelectCoin.filter(c => c !== coin);
+    } else if (newSelectCoin.length < 3) {
+      newSelectCoin.push(coin);
     }
+    setSelectCoin(newSelectCoin);
+    dispatch(updateSelectedCoinOne(newSelectCoin[0]?.id || ""));
+    dispatch(updateSelectCoinOneSymbol(newSelectCoin[0]?.symbol || ""));
+    dispatch(updateSelectedCoinTwo(newSelectCoin[1]?.id || ""));
+    dispatch(updateSelectCoinTwoSymbol(newSelectCoin[1]?.symbol || ""));
+    dispatch(updateSelectedCoinThree(newSelectCoin[2]?.id || ""));
+    dispatch(updateSelectCoinThreeSymbol(newSelectCoin[2]?.symbol || ""));
   };
 
   const matchCoin = (coin: object) => {

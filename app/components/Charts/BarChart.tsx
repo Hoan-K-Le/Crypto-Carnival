@@ -103,7 +103,7 @@ export default function BarChart() {
   };
 
   return (
-    <div className="h-[400px] w-full">
+    <div className="h-[400px] w-full rounded-lg">
       <div className="flex flex-col gap-2">
         <p className="text-xl text-[#191932]">Volume 24h</p>
         <p className="text-3xl text-[#181825]">
