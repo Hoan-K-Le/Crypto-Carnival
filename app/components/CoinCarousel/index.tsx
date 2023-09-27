@@ -28,25 +28,28 @@ const CoinCarousel = () => {
       slider.scrollLeft += slider.clientWidth;
     }
   };
-  const handleCoinClick = (coin: any) => {
+  const handleCoinClick = (coin: object) => {
     if (selectCoin.includes(coin)) {
-      setSelectCoin(selectCoin.filter((c: any) => c !== coin));
+      setSelectCoin((prevCoin: any) => prevCoin.filter((c: any) => c !== coin));
     } else {
-      if (selectCoin.length >= 2) {
-        setSelectCoin([selectCoin[1], coin]);
-        dispatch(updateSelectedCoinOne(selectCoin[1].id));
-        dispatch(updateSelectCoinOneSymbol(selectCoin[1].symbol));
-      } else {
+      if (selectCoin.length < 3) {
         const newSelectCoin = [...selectCoin, coin];
         setSelectCoin(newSelectCoin);
-        dispatch(updateSelectedCoinOne(newSelectCoin[0].id));
-        dispatch(updateSelectCoinOneSymbol(newSelectCoin[0].symbol));
+        console.log(newSelectCoin);
+        if (newSelectCoin.length > 0) {
+          dispatch(updateSelectedCoinOne(newSelectCoin[0].id));
+          dispatch(updateSelectCoinOneSymbol(newSelectCoin[0].symbol));
+        }
       }
     }
   };
 
-  const matchCoin = (coin: any) => {
-    return selectCoin.includes(coin) ? "bg-carousel bg-opacity-50" : "bg-white";
+  const matchCoin = (coin: object) => {
+    return selectCoin.includes(coin)
+      ? "bg-carousel bg-opacity-50"
+      : selectCoin.length < 3
+      ? "bg-white"
+      : "bg-gray-300";
   };
 
   useEffect(() => {}, [coinsData, selectCoin]);
