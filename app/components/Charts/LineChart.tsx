@@ -51,13 +51,18 @@ const options = {
 
 export default function LineChart() {
   const [coinOnePrice, setCoinOnePrice] = useState<number[]>([]);
-  const [coinOnePriceDates, setCoinOnePriceDates] = useState<number[]>([]);
   const [coinTwoPrice, setCoinTwoPrice] = useState<number[]>([]);
-  const [coinTwoPriceDates, setCoinTwoPriceDates] = useState<number[]>([]);
   const [coinThreePrice, setCoinThreePrice] = useState<number[]>([]);
+  const [coinOnePriceDates, setCoinOnePriceDates] = useState<number[]>([]);
+  const [coinTwoPriceDates, setCoinTwoPriceDates] = useState<number[]>([]);
   const [coinThreePriceDates, setCoinThreePriceDates] = useState<number[]>([]);
+  const [currentPriceOne, setCurrentPriceOne] = useState<number | null>(null);
+  const [currentPriceTwo, setCurrentPriceTwo] = useState<number | null>(null);
+  const [currentPriceThree, setCurrentPriceThree] = useState<number | null>(
+    null
+  );
+  const [getCurrentDate, setGetCurrentDate] = useState<number | string>("");
 
-  const [currentPrice, setCurrentPrice] = useState([]);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const [
     gradientBackground,
@@ -71,6 +76,7 @@ export default function LineChart() {
     gradientBackgroundThree,
     setGradientBackgroundThree,
   ] = useState<CanvasGradient | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector(state => state.coinGraph.isLoading);
   const currentCoinOne = useAppSelector(state => state.coinOne.coinOne);
   const currentCoinOneSymbol = useAppSelector(state => state.coinOne.symbol);
@@ -80,14 +86,16 @@ export default function LineChart() {
   const currentCoinThreeSymbol = useAppSelector(
     state => state.coinThree.symbol
   );
-  const dispatch = useDispatch<AppDispatch>();
+
   const chartRef = useRef();
   const fetchChartData = async (
     coin: any,
     setPrice: any,
-    setPriceDates: any
+    setPriceDates: any,
+    setCurrentPrice: any
   ) => {
     try {
+      if (!coin) return;
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
@@ -103,7 +111,6 @@ export default function LineChart() {
             return currentDate.toDateString() === priceDate.toDateString();
           }
         );
-        setCurrentPrice(getCurrentData);
 
         const prices = chartData.payload.prices.map(
           (price: [number, number]) => price[1]
@@ -111,6 +118,8 @@ export default function LineChart() {
         const date = chartData.payload.prices.map(
           (price: [number, number]) => price[0]
         );
+        setCurrentPrice(getCurrentData.length ? getCurrentData[0][1] : null);
+        setGetCurrentDate(getCurrentData.length ? getCurrentData[0][0] : null);
         setPrice(prices);
         setPriceDates(date);
       }
@@ -120,23 +129,24 @@ export default function LineChart() {
   };
 
   useEffect(() => {
-    const fetchDataForSelectedCoins = () => {
-      if (currentCoinOne) {
-        fetchChartData(currentCoinOne, setCoinOnePrice, setCoinOnePriceDates);
-      }
-      if (currentCoinTwo) {
-        fetchChartData(currentCoinTwo, setCoinTwoPrice, setCoinTwoPriceDates);
-      }
-      if (currentCoinThree) {
-        fetchChartData(
-          currentCoinThree,
-          setCoinThreePrice,
-          setCoinThreePriceDates
-        );
-      }
-    };
-
-    fetchDataForSelectedCoins();
+    fetchChartData(
+      currentCoinOne,
+      setCoinOnePrice,
+      setCoinOnePriceDates,
+      setCurrentPriceOne
+    );
+    fetchChartData(
+      currentCoinTwo,
+      setCoinTwoPrice,
+      setCoinTwoPriceDates,
+      setCurrentPriceTwo
+    );
+    fetchChartData(
+      currentCoinThree,
+      setCoinThreePrice,
+      setCoinThreePriceDates,
+      setCurrentPriceThree
+    );
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -206,26 +216,67 @@ export default function LineChart() {
 
   return (
     <div className="w-full h-[400px] rounded-lg">
-      <div className="flex flex-col gap-2">
-        <p className="text-xl uppercase text-[#191932]">
-          {currentCoinOne} ({currentCoinOneSymbol})
-        </p>
-        <p className="text-3xl text-[#181825]">
-          {currentPrice.length > 0
-            ? Number(currentPrice[0][1]).toLocaleString("en-US")
-            : "Loading..."}
-        </p>
-        <p className="text-[#424286]">
-          {currentPrice.length > 0
-            ? new Date(currentPrice[0][0]).toDateString()
-            : "Loading..."}
-        </p>
-      </div>
-
-      {isLoading ? (
-        <div>Linegraph Loading...</div>
+      {currentCoinTwo ? (
+        <>
+          <Line ref={chartRef} data={data} options={options} />
+          <div>
+            <div className="flex">
+              <p>
+                {currentCoinOne} ({currentCoinOneSymbol})
+              </p>
+              <p>
+                {currentPriceOne ? currentPriceOne.toLocaleString() : "loading"}{" "}
+                mln
+              </p>
+            </div>
+            <div className="flex">
+              <p>
+                {currentCoinTwo} ({currentCoinTwoSymbol})
+              </p>
+              <p>
+                {currentPriceTwo ? currentPriceTwo.toLocaleString() : "loading"}{" "}
+                mln
+              </p>
+            </div>
+            {currentCoinThree && (
+              <div className="flex">
+                <p>
+                  {currentCoinThree} ({currentCoinThreeSymbol})
+                </p>
+                <p>
+                  {currentPriceThree
+                    ? currentPriceThree.toLocaleString()
+                    : "loading"}{" "}
+                  mln
+                </p>
+              </div>
+            )}
+          </div>
+        </>
       ) : (
-        <Line ref={chartRef} data={data} options={options} />
+        <>
+          <div className="flex flex-col gap-2">
+            <p className="text-xl uppercase text-[#191932]">
+              {currentCoinOne} ({currentCoinOneSymbol})
+            </p>
+            <p className="text-3xl text-[#181825]">
+              {currentPriceOne
+                ? Number(currentPriceOne).toLocaleString("en-US")
+                : "Loading..."}
+            </p>
+            <p className="text-[#424286]">
+              {currentPriceOne
+                ? new Date(getCurrentDate).toDateString()
+                : "Loading..."}
+            </p>
+          </div>
+
+          {isLoading ? (
+            <div>Linegraph Loading...</div>
+          ) : (
+            <Line ref={chartRef} data={data} options={options} />
+          )}
+        </>
       )}
     </div>
   );
