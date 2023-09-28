@@ -95,14 +95,15 @@ export default function LineChart() {
     setCurrentPrice: any
   ) => {
     try {
-      if (!coin) return;
+      const initialCoin = coin;
+
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
           name: coin,
         })
       );
-
+      if (!initialCoin) return;
       if (fetchGraphData.fulfilled.match(chartData)) {
         const currentDate = new Date();
         const getCurrentData = chartData.payload.prices.filter(
