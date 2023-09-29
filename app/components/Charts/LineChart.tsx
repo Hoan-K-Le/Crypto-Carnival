@@ -48,34 +48,80 @@ const options = {
     },
   },
 };
+type InitialCoinProps = {
+  coinOne: {
+    current_price: number;
+    prices: string;
+    dates: number[];
+    current_date: string;
+  };
+  coinTwo: {
+    current_price: number;
+    prices: string;
+    dates: number[];
+    current_date: string;
+  };
+  coinThree: {
+    current_price: number;
+    prices: string;
+    dates: number[];
+    current_date: string;
+  };
+};
+const initialCoinValues = {
+  coinOne: {
+    current_price: 0,
+    prices: "",
+    current_date: "",
+    dates: [],
+  },
+  coinTwo: {
+    current_price: 0,
+    prices: "",
+    current_date: "",
+    dates: [],
+  },
+  coinThree: {
+    current_price: 0,
+    prices: "",
+    current_date: "",
+    dates: [],
+  },
+};
+
+type GradientProps = {
+  coinOne: {
+    gradient: CanvasGradient | null;
+  };
+  coinTwo: {
+    gradient: CanvasGradient | null;
+  };
+  coinThree: {
+    gradient: CanvasGradient | null;
+  };
+};
+
+const initialCoinGradient = {
+  coinOne: {
+    gradient: null,
+  },
+  coinTwo: {
+    gradient: null,
+  },
+  coinThree: {
+    gradient: null,
+  },
+};
+
+type CoinName = "coinOne" | "coinTwo" | "coinThree";
 
 export default function LineChart() {
-  const [coinOnePrice, setCoinOnePrice] = useState<number[]>([]);
-  const [coinTwoPrice, setCoinTwoPrice] = useState<number[]>([]);
-  const [coinThreePrice, setCoinThreePrice] = useState<number[]>([]);
-  const [coinOnePriceDates, setCoinOnePriceDates] = useState<number[]>([]);
-  const [coinTwoPriceDates, setCoinTwoPriceDates] = useState<number[]>([]);
-  const [coinThreePriceDates, setCoinThreePriceDates] = useState<number[]>([]);
-  const [currentPriceOne, setCurrentPriceOne] = useState<number | null>(null);
-  const [currentPriceTwo, setCurrentPriceTwo] = useState<number | null>(null);
-  const [currentPriceThree, setCurrentPriceThree] = useState<number | null>(
-    null
-  );
   const [getCurrentDate, setGetCurrentDate] = useState<number | string>("");
-
+  const [coins, setCoins] = useState<InitialCoinProps>(initialCoinValues);
+  const [gradients, setGradients] = useState<GradientProps>(
+    initialCoinGradient
+  );
   const currentCurrency = useAppSelector(state => state.currency.currencies);
-  const [
-    gradientBackground,
-    setGradientBackground,
-  ] = useState<CanvasGradient | null>(null);
-  const [
-    gradientBackgroundTwo,
-    setGradientBackgroundTwo,
-  ] = useState<CanvasGradient | null>(null);
-  const [
-    gradientBackgroundThree,
-    setGradientBackgroundThree,
-  ] = useState<CanvasGradient | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector(state => state.coinGraph.isLoading);
   const currentCoinOne = useAppSelector(state => state.coinOne.coinOne);
@@ -86,14 +132,9 @@ export default function LineChart() {
   const currentCoinThreeSymbol = useAppSelector(
     state => state.coinThree.symbol
   );
-
   const chartRef = useRef();
-  const fetchChartData = async (
-    coin: any,
-    setPrice: any,
-    setPriceDates: any,
-    setCurrentPrice: any
-  ) => {
+
+  const fetchChartData = async (coin: any, coinName: CoinName) => {
     try {
       const initialCoin = coin;
 
@@ -119,10 +160,17 @@ export default function LineChart() {
         const date = chartData.payload.prices.map(
           (price: [number, number]) => price[0]
         );
-        setCurrentPrice(getCurrentData.length ? getCurrentData[0][1] : null);
-        setGetCurrentDate(getCurrentData.length ? getCurrentData[0][0] : null);
-        setPrice(prices);
-        setPriceDates(date);
+        console.log(coinName, "ChartData:", chartData);
+        setCoins(prevCoin => ({
+          ...prevCoin,
+          [coinName]: {
+            ...prevCoin[coinName],
+            current_price: getCurrentData.length ? getCurrentData[0][1] : null,
+            current_date: getCurrentData.length ? getCurrentData[0][0] : null,
+            prices: prices,
+            dates: date,
+          },
+        }));
       }
     } catch (err) {
       console.log(err);
@@ -130,24 +178,24 @@ export default function LineChart() {
   };
 
   useEffect(() => {
-    fetchChartData(
-      currentCoinOne,
-      setCoinOnePrice,
-      setCoinOnePriceDates,
-      setCurrentPriceOne
-    );
-    fetchChartData(
-      currentCoinTwo,
-      setCoinTwoPrice,
-      setCoinTwoPriceDates,
-      setCurrentPriceTwo
-    );
-    fetchChartData(
-      currentCoinThree,
-      setCoinThreePrice,
-      setCoinThreePriceDates,
-      setCurrentPriceThree
-    );
+    const coinsForFetching: { coin: string; name: CoinName }[] = [
+      {
+        coin: currentCoinOne,
+        name: "coinOne",
+      },
+      {
+        coin: currentCoinTwo,
+        name: "coinTwo",
+      },
+      {
+        coin: currentCoinThree,
+        name: "coinThree",
+      },
+    ];
+    coinsForFetching.forEach(({ coin, name }) => {
+      fetchChartData(coin, name);
+    });
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -160,16 +208,24 @@ export default function LineChart() {
       gradientTwo.addColorStop(1, "rgba(216, 120, 250, 0.01)");
       gradientThree.addColorStop(0, "rgba(30, 213, 191, 0.1)");
       gradientThree.addColorStop(1, "rgba(145, 252, 228, 0.01)");
-      setGradientBackground(gradient);
-      setGradientBackgroundTwo(gradientTwo);
-      setGradientBackgroundThree(gradientThree);
+      setGradients(prevState => ({
+        coinOne: {
+          gradient: gradient,
+        },
+        coinTwo: {
+          gradient: gradientTwo,
+        },
+        coinThree: {
+          gradient: gradientThree,
+        },
+      }));
     }
   }, [currentCurrency, currentCoinOne, currentCoinTwo, currentCoinThree]);
   const combinedDate = Array.from(
     new Set([
-      ...coinOnePriceDates,
-      ...coinTwoPriceDates,
-      ...coinThreePriceDates,
+      ...coins.coinOne.dates,
+      ...coins.coinTwo.dates,
+      ...coins.coinThree.dates,
     ])
   ).sort((a, b) => a - b);
 
@@ -179,9 +235,9 @@ export default function LineChart() {
       {
         fill: true,
         label: "Coin One",
-        data: currentCoinOne ? coinOnePrice : [],
+        data: currentCoinOne ? coins.coinOne.prices : [],
         borderColor: "#7878FA",
-        backgroundColor: gradientBackground as any,
+        backgroundColor: gradients.coinOne.gradient as CanvasGradient,
         pointStyle: "circle",
         pointRadius: 0,
         tension: 0.4,
@@ -191,9 +247,9 @@ export default function LineChart() {
       {
         fill: true,
         label: "Coin Two",
-        data: currentCoinTwo ? coinTwoPrice : [],
+        data: currentCoinTwo ? coins.coinTwo.prices : [],
         borderColor: "#D878FA",
-        backgroundColor: gradientBackgroundTwo as any,
+        backgroundColor: gradients.coinTwo.gradient as CanvasGradient,
         pointStyle: "circle",
         pointRadius: 0,
         tension: 0.4,
@@ -203,9 +259,9 @@ export default function LineChart() {
       {
         fill: true,
         label: "Coin Three",
-        data: currentCoinThree ? coinThreePrice : [],
+        data: currentCoinThree ? coins.coinThree.prices : [],
         borderColor: "#AFF83A",
-        backgroundColor: gradientBackgroundThree as any,
+        backgroundColor: gradients.coinThree.gradient as CanvasGradient,
         pointStyle: "circle",
         pointRadius: 0,
         tension: 0.4,
@@ -226,7 +282,9 @@ export default function LineChart() {
                 {currentCoinOne} ({currentCoinOneSymbol})
               </p>
               <p>
-                {currentPriceOne ? currentPriceOne.toLocaleString() : "loading"}{" "}
+                {coins.coinOne.current_price
+                  ? coins.coinOne.current_price.toLocaleString()
+                  : "loading"}{" "}
                 mln
               </p>
             </div>
@@ -235,7 +293,9 @@ export default function LineChart() {
                 {currentCoinTwo} ({currentCoinTwoSymbol})
               </p>
               <p>
-                {currentPriceTwo ? currentPriceTwo.toLocaleString() : "loading"}{" "}
+                {coins.coinTwo.current_price
+                  ? coins.coinTwo.current_price.toLocaleString()
+                  : "loading"}{" "}
                 mln
               </p>
             </div>
@@ -245,8 +305,8 @@ export default function LineChart() {
                   {currentCoinThree} ({currentCoinThreeSymbol})
                 </p>
                 <p>
-                  {currentPriceThree
-                    ? currentPriceThree.toLocaleString()
+                  {coins.coinThree.current_price
+                    ? coins.coinThree.current_price.toLocaleString()
                     : "loading"}{" "}
                   mln
                 </p>
@@ -261,12 +321,12 @@ export default function LineChart() {
               {currentCoinOne} ({currentCoinOneSymbol})
             </p>
             <p className="text-3xl text-[#181825]">
-              {currentPriceOne
-                ? Number(currentPriceOne).toLocaleString("en-US")
+              {coins.coinOne.current_price
+                ? Number(coins.coinOne.current_price).toLocaleString("en-US")
                 : "Loading..."}
             </p>
             <p className="text-[#424286]">
-              {currentPriceOne
+              {coins.coinOne.current_price
                 ? new Date(getCurrentDate).toDateString()
                 : "Loading..."}
             </p>
