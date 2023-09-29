@@ -111,7 +111,7 @@ export default function BarChart() {
             ? Number(currentData[0][1] as number).toLocaleString("en-US")
             : "Loading..."}
         </p>
-        <p className="text-[#424286]">
+        <p>
           {currentData.length > 0
             ? new Date(currentData[0][0] as number).toDateString()
             : "Loading..."}
