@@ -327,7 +327,7 @@ export default function LineChart() {
             </p>
             <p className="text-[#424286]">
               {coins.coinOne.current_price
-                ? new Date(getCurrentDate).toDateString()
+                ? new Date(coins.coinOne.current_date).toDateString()
                 : "Loading..."}
             </p>
           </div>
