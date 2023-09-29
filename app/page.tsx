@@ -1,5 +1,4 @@
 "use client";
-import ChartContainer from "./components/Charts/ChartContainer";
 import LineChart from "./components/Charts/LineChart";
 import BarChart from "./components/Charts/BarChart";
 import TableOverview from "./components/TableOverview/TableOverview";
