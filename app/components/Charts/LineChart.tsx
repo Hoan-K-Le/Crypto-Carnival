@@ -202,25 +202,16 @@ export default function LineChart() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const coinsForFetching: { coin: string; index: number }[] = [
-        {
-          coin: currentCoin[0].coin,
-          index: 0,
-        },
-      ];
-      if (currentCoin[1].coin) {
-        coinsForFetching.push({
-          coin: currentCoin[1].coin,
-          index: 1,
-        });
-      }
-      if (currentCoin[2].coin) {
-        coinsForFetching.push({
-          coin: currentCoin[2].coin,
-          index: 2,
-        });
-      }
+      const coinsForFetching: { coin: string; index: number }[] = [];
 
+      for (let i = 0; i < currentCoin.length; i++) {
+        if (currentCoin[i] && currentCoin[i].coin) {
+          coinsForFetching.push({
+            coin: currentCoin[i].coin,
+            index: i,
+          });
+        }
+      }
       for (const { coin, index } of coinsForFetching) {
         await fetchChartData(coin, index);
       }
