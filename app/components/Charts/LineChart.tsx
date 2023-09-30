@@ -102,8 +102,6 @@ const initialCoins: InitialCoinProps[] = [
   },
 ];
 
-type CoinName = "coinOne" | "coinTwo" | "coinThree";
-
 export default function LineChart() {
   const [coins, setCoins] = useState(initialCoins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
