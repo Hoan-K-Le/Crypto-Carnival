@@ -53,7 +53,7 @@ const options = {
 type InitialCoinProps = {
   name: string;
   current_price: number;
-  prices: [];
+  prices: number[];
   dates: number[];
   current_date: string;
   coin_name: string;
@@ -141,31 +141,34 @@ export default function LineChart() {
 
         setCoins(prevState =>
           prevState.map((c, idx) => {
-            if (!currentCoins[idx] || !currentCoins[idx].id) {
-              return {
-                ...c,
-                current_date: "",
-                current_price: 0,
-                dates: [],
-                prices: [],
-                coin_name: "",
-              };
-            }
+            const currentCoin = currentCoins[idx];
+            const isMissing = !currentCoin || !currentCoin.id;
+            const matchingCoin = c.name === coins[index].name;
+            const defaultCoinData = {
+              current_date: "",
+              current_price: 0,
+              dates: [],
+              prices: [],
+              coin_name: "",
+            };
+            const updatedCoinData = {
+              current_price: getCurrentData.length
+                ? getCurrentData[0][1]
+                : null,
+              current_date: getCurrentData.length ? getCurrentData[0][0] : null,
+              prices: prices,
+              dates: date,
+              coin_name: getCoinName(index),
+            };
 
-            if (c.name === coins[index].name) {
+            if (isMissing)
+              return { ...c, ...defaultCoinData } as InitialCoinProps;
+            if (matchingCoin)
               return {
                 ...c,
-                current_price: getCurrentData.length
-                  ? getCurrentData[0][1]
-                  : null,
-                current_date: getCurrentData.length
-                  ? getCurrentData[0][0]
-                  : null,
-                prices: prices,
-                dates: date,
-                coin_name: getCoinName(index),
-              };
-            }
+                ...updatedCoinData,
+              } as InitialCoinProps;
+
             return c;
           })
         );
@@ -207,8 +210,13 @@ export default function LineChart() {
           });
         }
       }
-      for (const { coin, index } of coinsForFetching) {
-        await fetchChartData(coin, index);
+      const fetchPromises = coinsForFetching.map(({ coin, index }) =>
+        fetchChartData(coin, index)
+      );
+      try {
+        await Promise.all(fetchPromises);
+      } catch (err) {
+        console.log(`ERROR ON FETCHPROMISES ${err}`);
       }
     };
     fetchData();
@@ -289,37 +297,37 @@ export default function LineChart() {
 
   return (
     <div className="w-full h-[400px] rounded-lg">
-      {!coins[1].current_price && !coins[2].current_price ? (
+      {!coins[1]?.current_price && !coins[2]?.current_price ? (
         <div className="flex flex-col gap-2">
           <p className="text-[#191932] text-xl uppercase">
-            {coins[0].coin_name}
+            {coins[0]?.coin_name}
           </p>
           <p className="text-3xl text-[#181825] font-bold flex items-center">
-            {getSymbol(currentCurrency)} {coins[0].current_price.toFixed(2)}
+            {getSymbol(currentCurrency)} {coins[0]?.current_price.toFixed(2)}
           </p>
           <p className="text-[#424286]">
-            {new Date(coins[0].current_date).toDateString()}
+            {new Date(coins[0]?.current_date).toDateString()}
           </p>
           <Line ref={chartRef} data={data} options={options} />
         </div>
       ) : (
         <>
           <p className="text-[#181825] text-3xl">
-            {new Date(coins[0].current_date).toDateString()}
+            {new Date(coins[0]?.current_date).toDateString()}
           </p>
           <Line ref={chartRef} data={data} options={options} />
           <div className="flex gap-10 mt-2">
             {coins.map(
               (coin, i) =>
-                coin.current_price !== 0 && (
+                coin?.current_price !== 0 && (
                   <div key={i} className="flex items-center gap-2">
                     <div className={`h-[14px] w-[14px] rounded gap-2`} />
                     <p className="flex items-center uppercase">
-                      {coin.coin_name}
+                      {coin?.coin_name}
                     </p>
                     <span className="text-[#424286] flex items-center">
                       {getSymbol(currentCurrency)}{" "}
-                      {coin.current_price.toFixed(2)}
+                      {coin?.current_price.toFixed(2)}
                     </span>
                   </div>
                 )
