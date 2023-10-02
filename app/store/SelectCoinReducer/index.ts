@@ -1,89 +1,34 @@
 "use client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface SelectCoinOne {
-  coinOne: string;
+interface SelectedCoin {
+  id: string;
   symbol: string;
 }
 
-const initialState: SelectCoinOne = {
-  coinOne: "bitcoin",
-  symbol: "btc",
-};
+const initialState: SelectedCoin[] = [];
 
-export const coinOneSlice = createSlice({
-  name: "coinOne",
+export const selectCoinSlice = createSlice({
+  name: "selectCoin",
   initialState,
   reducers: {
-    updateSelectedCoinOne: (state, action: PayloadAction<string>) => {
-      state.coinOne = action.payload;
+    updateSelectedCoin: (state, action: PayloadAction<SelectedCoin>) => {
+      const idx = state.findIndex(coin => coin.id === action.payload.id);
+      // checks if the coin exist in the array;
+      if (idx > -1) {
+        state[idx] = action.payload; // updates the specific coin with new data;
+      } else {
+        state.push(action.payload);
+      }
     },
-    updateSelectCoinOneSymbol: (state, action: PayloadAction<string>) => {
-      state.symbol = action.payload;
-    },
-  },
-});
-
-export const {
-  updateSelectedCoinOne,
-  updateSelectCoinOneSymbol,
-} = coinOneSlice.actions;
-export const coinOneReducer = coinOneSlice.reducer;
-
-interface SelectCoinTwo {
-  coinTwo: string;
-  symbol: string;
-}
-
-const initialStateTwo: SelectCoinTwo = {
-  coinTwo: "",
-  symbol: "",
-};
-
-export const coinTwoSlice = createSlice({
-  name: "coinTwo",
-  initialState: initialStateTwo,
-  reducers: {
-    updateSelectedCoinTwo: (state, action: PayloadAction<string>) => {
-      state.coinTwo = action.payload;
-    },
-    updateSelectCoinTwoSymbol: (state, action: PayloadAction<string>) => {
-      state.symbol = action.payload;
+    removeSelectedCoin: (state, action: PayloadAction<string>) => {
+      return state.filter((coin, i) => coin.id !== action.payload);
     },
   },
 });
 
 export const {
-  updateSelectedCoinTwo,
-  updateSelectCoinTwoSymbol,
-} = coinTwoSlice.actions;
-export const coinTwoReducer = coinTwoSlice.reducer;
-
-interface SelectCoinThree {
-  coinThree: string;
-  symbol: string;
-}
-
-const initialStateThree: SelectCoinThree = {
-  coinThree: "",
-  symbol: "",
-};
-
-export const coinThreeSlice = createSlice({
-  name: "coinThree",
-  initialState: initialStateThree,
-  reducers: {
-    updateSelectedCoinThree: (state, action: PayloadAction<string>) => {
-      state.coinThree = action.payload;
-    },
-    updateSelectCoinThreeSymbol: (state, action: PayloadAction<string>) => {
-      state.symbol = action.payload;
-    },
-  },
-});
-
-export const {
-  updateSelectedCoinThree,
-  updateSelectCoinThreeSymbol,
-} = coinThreeSlice.actions;
-export const coinThreeReducer = coinThreeSlice.reducer;
+  updateSelectedCoin,
+  removeSelectedCoin,
+} = selectCoinSlice.actions;
+export const selectCoinReducer = selectCoinSlice.reducer;

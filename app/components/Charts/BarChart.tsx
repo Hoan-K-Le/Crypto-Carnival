@@ -43,14 +43,15 @@ export default function BarChart() {
   const dispatch = useDispatch<AppDispatch>();
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const isLoading = useAppSelector(state => state.coinGraph.isLoading);
-  const currentCoinOne = useAppSelector(state => state.coinOne.coinOne);
+  const currentCoins = useAppSelector(state => state.selectCoin);
   const chartRef = useRef();
   const fetchChartData = async () => {
+    if (!currentCoins[0]) return;
     try {
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
-          name: currentCoinOne,
+          name: currentCoins[0].id,
         })
       );
 
@@ -88,7 +89,7 @@ export default function BarChart() {
       gradient.addColorStop(1, "rgba(179, 116, 242, 0.01)");
       setGradientBackground(gradient);
     }
-  }, [currentCurrency, currentCoinOne]);
+  }, [currentCurrency, currentCoins[0]?.id]);
 
   const data = {
     labels: bitcoinVolumeDates.map(date => new Date(date).getDate()),

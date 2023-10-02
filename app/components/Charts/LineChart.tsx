@@ -13,6 +13,7 @@ import {
 import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { useDispatch } from "react-redux";
 import { fetchGraphData } from "@/app/store/ChartSelectorData";
+import getSymbol from "../../utilities/symbol";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
 const options = {
@@ -102,30 +103,16 @@ const initialCoins: InitialCoinProps[] = [
   },
 ];
 
-type CoinName = "coinOne" | "coinTwo" | "coinThree";
-
 export default function LineChart() {
   const [coins, setCoins] = useState(initialCoins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
+  const currentCoins = useAppSelector(state => state.selectCoin);
+
   const dispatch = useDispatch<AppDispatch>();
   const chartRef = useRef();
-  const currentCoin = [
-    {
-      coin: useAppSelector(state => state.coinOne.coinOne),
-      symbol: useAppSelector(state => state.coinOne.symbol),
-    },
-    {
-      coin: useAppSelector(state => state.coinTwo.coinTwo),
-      symbol: useAppSelector(state => state.coinTwo.symbol),
-    },
-    {
-      coin: useAppSelector(state => state.coinThree.coinThree),
-      symbol: useAppSelector(state => state.coinThree.symbol),
-    },
-  ];
 
   const getCoinName = (index: number) => {
-    return `${currentCoin[index].coin} (${currentCoin[index].symbol})`;
+    return `${currentCoins[index].id} (${currentCoins[index].symbol})`;
   };
 
   const fetchChartData = async (coin: any, index: number) => {
@@ -153,11 +140,8 @@ export default function LineChart() {
         );
 
         setCoins(prevState =>
-          prevState.map(c => {
-            if (
-              (!currentCoin[1].coin && c.name === "coinTwo") ||
-              (!currentCoin[2].coin && c.name === "coinThree")
-            ) {
+          prevState.map((c, idx) => {
+            if (!currentCoins[idx] || !currentCoins[idx].id) {
               return {
                 ...c,
                 current_date: "",
@@ -167,6 +151,7 @@ export default function LineChart() {
                 coin_name: "",
               };
             }
+
             if (c.name === coins[index].name) {
               return {
                 ...c,
@@ -204,21 +189,26 @@ export default function LineChart() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const coinsForFetching: { coin: string; index: number }[] = [
+      if (!currentCoins[0]) return;
+      const coinsForFetching: {
+        coin: string;
+        index: number;
+      }[] = [
         {
-          coin: currentCoin[0].coin,
+          coin: currentCoins[0].id,
           index: 0,
         },
       ];
-      if (currentCoin[1].coin) {
+
+      if (currentCoins[1] && currentCoins[1].id) {
         coinsForFetching.push({
-          coin: currentCoin[1].coin,
+          coin: currentCoins[1].id,
           index: 1,
         });
       }
-      if (currentCoin[2].coin) {
+      if (currentCoins[2] && currentCoins[2].id) {
         coinsForFetching.push({
-          coin: currentCoin[2].coin,
+          coin: currentCoins[2].id,
           index: 2,
         });
       }
@@ -248,7 +238,9 @@ export default function LineChart() {
         })
       );
     }
-  }, [currentCurrency, ...currentCoin.map((coin, i) => coin.coin)]);
+    console.log("currentcoins", currentCoins);
+    console.log("coinsss", coins);
+  }, [currentCurrency, currentCoins]);
 
   const combinedDate = Array.from(
     new Set(coins.flatMap(coin => coin.dates))
@@ -305,47 +297,43 @@ export default function LineChart() {
 
   return (
     <div className="w-full h-[400px] rounded-lg">
-      {!currentCoin[1].coin && !currentCoin[2].coin ? (
+      {!coins[1].current_price && !coins[2].current_price ? (
         <div className="flex flex-col gap-2">
-          <p className="text-xl text-[#191932] uppercase">
+          <p className="text-[#191932] text-xl uppercase">
             {coins[0].coin_name}
           </p>
-          <p className="text-3xl text-[#181825]">
-            {coins[0].current_price.toFixed(2)}
+          <p className="text-3xl text-[#181825] font-bold flex items-center">
+            {getSymbol(currentCurrency)} {coins[0].current_price.toFixed(2)}
           </p>
-          <p>{new Date(coins[0].current_date).toDateString()}</p>
+          <p className="text-[#424286]">
+            {new Date(coins[0].current_date).toDateString()}
+          </p>
+          <Line ref={chartRef} data={data} options={options} />
         </div>
       ) : (
-        <p className="text-[#181825] text-3xl">
-          {new Date(coins[0].current_date).toDateString()}
-        </p>
-      )}
-
-      <Line ref={chartRef} data={data} options={options} />
-      {(currentCoin[1].coin || currentCoin[2].coin) && (
-        <div className="flex gap-10 mt-2">
-          {coins.map((coin, i) =>
-            coin.current_price !== 0 ? (
-              <div className="flex items-center gap-2" key={coin.name}>
-                <div
-                  className={`h-[14px] w-[14px] rounded gap-2 ${
-                    coin.name === "coinOne"
-                      ? "bg-[#7878FA]"
-                      : coin.name === "coinTwo"
-                      ? "bg-[#D878FA]"
-                      : coin.name === "coinThree"
-                      ? "bg-green-300"
-                      : ""
-                  }`}
-                ></div>
-                <p className="flex items-center uppercase">{coin.coin_name}</p>
-                <span className="text-[#424286]">
-                  {coin.current_price.toFixed(2)}
-                </span>
-              </div>
-            ) : null
-          )}
-        </div>
+        <>
+          <p className="text-[#181825] text-3xl">
+            {new Date(coins[0].current_date).toDateString()}
+          </p>
+          <Line ref={chartRef} data={data} options={options} />
+          <div className="flex gap-10 mt-2">
+            {coins.map(
+              (coin, i) =>
+                coin.current_price !== 0 && (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className={`h-[14px] w-[14px] rounded gap-2`} />
+                    <p className="flex items-center uppercase">
+                      {coin.coin_name}
+                    </p>
+                    <span className="text-[#424286] flex items-center">
+                      {getSymbol(currentCurrency)}{" "}
+                      {coin.current_price.toFixed(2)}
+                    </span>
+                  </div>
+                )
+            )}
+          </div>
+        </>
       )}
     </div>
   );

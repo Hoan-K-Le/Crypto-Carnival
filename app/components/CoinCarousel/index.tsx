@@ -6,12 +6,8 @@ import getAvg from "@/app/utilities/getAvg";
 import Icon from "../Icon/Icon";
 import { useDispatch } from "react-redux";
 import {
-  updateSelectedCoinOne,
-  updateSelectCoinOneSymbol,
-  updateSelectedCoinTwo,
-  updateSelectCoinTwoSymbol,
-  updateSelectedCoinThree,
-  updateSelectCoinThreeSymbol,
+  updateSelectedCoin,
+  removeSelectedCoin,
 } from "@/app/store/SelectCoinReducer";
 const CoinCarousel = () => {
   const [selectCoin, setSelectCoin] = useState<any>([]);
@@ -35,16 +31,12 @@ const CoinCarousel = () => {
     let newSelectCoin = [...selectCoin];
     if (newSelectCoin.includes(coin)) {
       newSelectCoin = newSelectCoin.filter(c => c !== coin);
+      dispatch(removeSelectedCoin(coin.id)); //
     } else if (newSelectCoin.length < 3) {
       newSelectCoin.push(coin);
+      dispatch(updateSelectedCoin({ id: coin.id, symbol: coin.symbol }));
     }
     setSelectCoin(newSelectCoin);
-    dispatch(updateSelectedCoinOne(newSelectCoin[0]?.id || ""));
-    dispatch(updateSelectCoinOneSymbol(newSelectCoin[0]?.symbol || ""));
-    dispatch(updateSelectedCoinTwo(newSelectCoin[1]?.id || ""));
-    dispatch(updateSelectCoinTwoSymbol(newSelectCoin[1]?.symbol || ""));
-    dispatch(updateSelectedCoinThree(newSelectCoin[2]?.id || ""));
-    dispatch(updateSelectCoinThreeSymbol(newSelectCoin[2]?.symbol || ""));
   };
 
   const matchCoin = (coin: object) => {
