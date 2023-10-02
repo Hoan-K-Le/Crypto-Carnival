@@ -199,20 +199,14 @@ export default function LineChart() {
           index: 0,
         },
       ];
-
-      if (currentCoins[1] && currentCoins[1].id) {
-        coinsForFetching.push({
-          coin: currentCoins[1].id,
-          index: 1,
-        });
+      for (let i = 1; i <= 2; i++) {
+        if (currentCoins[i] && currentCoins[i].id) {
+          coinsForFetching.push({
+            coin: currentCoins[i].id,
+            index: i,
+          });
+        }
       }
-      if (currentCoins[2] && currentCoins[2].id) {
-        coinsForFetching.push({
-          coin: currentCoins[2].id,
-          index: 2,
-        });
-      }
-
       for (const { coin, index } of coinsForFetching) {
         await fetchChartData(coin, index);
       }
@@ -238,8 +232,6 @@ export default function LineChart() {
         })
       );
     }
-    console.log("currentcoins", currentCoins);
-    console.log("coinsss", coins);
   }, [currentCurrency, currentCoins]);
 
   const combinedDate = Array.from(
