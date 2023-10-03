@@ -13,15 +13,20 @@ const CirculatingSupply: React.FC<CirculatingSupplyProps> = ({
   formatNumber,
   coin,
 }) => {
+  const getAverageData = (data: number, bg1: string, bg2: string): string => {
+    return data < 0 ? `bg-[#${bg1}]` : `bg-[#${bg2}]`;
+  };
   return (
     <div className="flex justify-between">
       <div className="flex items-center gap-1">
         <div
-          className={`${
-            coin?.price_change_percentage_24h_in_currency < 0
-              ? "bg-[#FE2264]"
-              : "bg-[#00B1A7] "
-          } rounded-full h-[10px] w-[10px]`}
+          className={`
+           ${getAverageData(
+             coin?.price_change_percentage_24h_in_currency,
+             "FE2264",
+             "00B1A7"
+           )}
+          rounded-full h-[10px] w-[10px]`}
         ></div>
         <span className="flex items-center">
           {symbol}
@@ -30,11 +35,13 @@ const CirculatingSupply: React.FC<CirculatingSupplyProps> = ({
       </div>
       <div className="flex items-center gap-1">
         <div
-          className={`${
-            coin?.price_change_percentage_24h_in_currency < 0
-              ? "bg-[#FBBAD1]"
-              : "bg-[#AFE5E5]"
-          } rounded-full h-[10px] w-[10px]`}
+          className={`
+           ${getAverageData(
+             coin?.price_change_percentage_24h_in_currency,
+             "FBBAD1",
+             "AFE5E5"
+           )}
+         rounded-full h-[10px] w-[10px]`}
         ></div>
         <span>
           {symbol}

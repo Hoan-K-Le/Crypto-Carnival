@@ -2,15 +2,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
-import TableHeader from "./TableHeader/TableHeader";
-import CoinName from "./CoinName";
-import CoinAvg from "./CoinAvg";
-import ProgressBar from "../ProgressBar/ProgressBar";
-import CirculatingSupply from "./CirculatingSupply";
-import VolumeMarket from "./VolumeMarket";
-import CoinRank from "./CoinRank";
-import CoinPrice from "./CoinPrice";
-import { TableDataProps } from "./TableDataProps";
 import { formatNumber } from "@/app/utilities/formatNumber";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch } from "react-redux";
@@ -34,6 +25,15 @@ ChartJS.register(
   LinearScale,
   PointElement
 );
+import TableHeader from "./TableHeader/TableHeader";
+import CoinName from "./CoinName";
+import CoinAvg from "./CoinAvg";
+import ProgressBar from "../ProgressBar/ProgressBar";
+import CirculatingSupply from "./CirculatingSupply";
+import VolumeMarket from "./VolumeMarket";
+import CoinRank from "./CoinRank";
+import CoinPrice from "./CoinPrice";
+import { TableDataProps } from "./TableDataProps";
 
 export default function TableOverview() {
   const [page, setPage] = useState(1);
@@ -144,7 +144,6 @@ export default function TableOverview() {
                   <ProgressBar coin={coin} progressBar={progressBar} />
                 </div>
               </td>
-
               <td className="w-1/6">
                 <div className="w-4/5 flex flex-col">
                   <CirculatingSupply
