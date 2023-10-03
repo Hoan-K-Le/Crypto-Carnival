@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { useAppSelector } from "@/app/store/store";
+import { useAppSelector, AppDispatch } from "@/app/store/store";
 import getSymbol from "@/app/utilities/symbol";
 import getAvg from "@/app/utilities/getAvg";
 import Icon from "../Icon/Icon";
-
+import { useDispatch } from "react-redux";
+import {
+  updateSelectedCoin,
+  removeSelectedCoin,
+} from "@/app/store/SelectCoinReducer";
 const CoinCarousel = () => {
   const [selectCoin, setSelectCoin] = useState<any>([]);
   const coinsData = useAppSelector(state => state.coins.coins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
-  useEffect(() => {}, [coinsData]);
+  const dispatch = useDispatch<AppDispatch>();
   const slideLeft = () => {
     const slider = document.getElementById("slider");
     if (slider) {
@@ -24,21 +28,26 @@ const CoinCarousel = () => {
     }
   };
   const handleCoinClick = (coin: any) => {
-    if (selectCoin.includes(coin)) {
-      setSelectCoin(selectCoin.filter((c: any) => c !== coin));
-    } else {
-      if (selectCoin.length >= 2) {
-        setSelectCoin([selectCoin[1], coin]);
-      } else {
-        setSelectCoin([...selectCoin, coin]);
-      }
+    let newSelectCoin = [...selectCoin];
+    if (newSelectCoin.includes(coin)) {
+      newSelectCoin = newSelectCoin.filter(c => c !== coin);
+      dispatch(removeSelectedCoin(coin.id)); //
+    } else if (newSelectCoin.length < 3) {
+      newSelectCoin.push(coin);
+      dispatch(updateSelectedCoin({ id: coin.id, symbol: coin.symbol }));
     }
+    setSelectCoin(newSelectCoin);
   };
 
-  const matchCoin = (coin: any) => {
-    return selectCoin.includes(coin) ? "bg-carousel bg-opacity-50" : "";
+  const matchCoin = (coin: object) => {
+    return selectCoin.includes(coin)
+      ? "bg-carousel bg-opacity-50"
+      : selectCoin.length < 3
+      ? "bg-white"
+      : "bg-gray-300";
   };
 
+  useEffect(() => {}, [coinsData, selectCoin]);
   return (
     <div className="relative flex items-center mb-5">
       <MdChevronLeft
@@ -50,13 +59,13 @@ const CoinCarousel = () => {
         id="slider"
         className="flex overflow-hidden scroll-smooth scrollbar-hide"
       >
-        {coinsData.map((coin, index) => (
+        {coinsData?.map((coin, index) => (
           <div key={coin.id} className="flex-shrink-0 p-2">
             <div
               onClick={() => handleCoinClick(coin)}
               className={`${matchCoin(
                 coin
-              )} flex items-center cursor-pointer rounded-xl bg-white shadow-md px-5 py-3 gap-3`}
+              )} flex items-center cursor-pointer rounded-xl  shadow-md px-5 py-3 gap-3`}
             >
               <img
                 src={coin.image}
@@ -67,7 +76,7 @@ const CoinCarousel = () => {
                 <p>{coin.name}</p>
                 <div className={`flex items-center gap-3`}>
                   <span className="text-[#424286] text-opacity-80">
-                    {coin.current_price.toFixed(2)}
+                    {coin.current_price ? coin.current_price.toFixed(2) : 1}
                     {getSymbol(currentCurrency)}
                   </span>
                   <span
@@ -80,7 +89,10 @@ const CoinCarousel = () => {
                     ) : (
                       <Icon iconVariant="arrowUp" />
                     )}
-                    {coin.price_change_percentage_24h_in_currency.toFixed(2)}%
+                    {coin.price_change_percentage_24h_in_currency
+                      ? coin.price_change_percentage_24h_in_currency.toFixed(2)
+                      : 1}
+                    %
                   </span>
                 </div>
               </div>
