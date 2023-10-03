@@ -40,17 +40,18 @@ export default function BarChart() {
     gradientBackground,
     setGradientBackground,
   ] = useState<CanvasGradient | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const isLoading = useAppSelector(state => state.coinGraph.isLoading);
-  const dispatch = useDispatch<AppDispatch>();
+  const currentCoins = useAppSelector(state => state.selectCoin);
   const chartRef = useRef();
   const fetchChartData = async () => {
+    if (!currentCoins[0]) return;
     try {
-      const btc = "bitcoin";
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
-          name: btc,
+          name: currentCoins[0].id,
         })
       );
 
@@ -88,7 +89,7 @@ export default function BarChart() {
       gradient.addColorStop(1, "rgba(179, 116, 242, 0.01)");
       setGradientBackground(gradient);
     }
-  }, [currentCurrency]);
+  }, [currentCurrency, currentCoins[0]?.id]);
 
   const data = {
     labels: bitcoinVolumeDates.map(date => new Date(date).getDate()),
@@ -103,7 +104,7 @@ export default function BarChart() {
   };
 
   return (
-    <div className="h-[400px] w-full">
+    <div className="h-[400px] w-full rounded-lg">
       <div className="flex flex-col gap-2">
         <p className="text-xl text-[#191932]">Volume 24h</p>
         <p className="text-3xl text-[#181825]">
@@ -111,7 +112,7 @@ export default function BarChart() {
             ? Number(currentData[0][1] as number).toLocaleString("en-US")
             : "Loading..."}
         </p>
-        <p className="text-[#424286]">
+        <p>
           {currentData.length > 0
             ? new Date(currentData[0][0] as number).toDateString()
             : "Loading..."}

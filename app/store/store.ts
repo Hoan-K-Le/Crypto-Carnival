@@ -4,6 +4,7 @@ import currencyReducer from "./CurrencyReducer";
 import coinsReducer from "./CoinsData";
 import globalCoinReducer from "./CoinsBarData";
 import coinGraphReducer from "./ChartSelectorData";
+import { selectCoinReducer } from "./SelectCoinReducer";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     coins: coinsReducer,
     generalCoins: globalCoinReducer,
     coinGraph: coinGraphReducer,
+    selectCoin: selectCoinReducer,
   },
 });
 
