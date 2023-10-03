@@ -5,14 +5,18 @@ import { TableDataProps } from "../TableDataProps";
 
 const CoinName = ({ coin }: { coin: TableDataProps }) => {
   return (
-    <td className="">
-      <PageLink href={`../pages/CoinDetail/${coin.id}`} id={coin.id}>
-        <button className="flex justify-center gap-2">
+    <td>
+      <button className="flex justify-center gap-2">
+        <PageLink
+          className={"flex items-center gap-2"}
+          href={`../pages/CoinDetail/${coin?.id}`}
+          id={coin?.id}
+        >
           <img className="w-[25px] h-[25px]" src={coin.image} alt="coin-img" />
-          <span>{coin.name}</span>
-          <span>({coin.symbol.toUpperCase()})</span>
-        </button>
-      </PageLink>
+          <span>{coin?.name}</span>
+          <span>({coin?.symbol.toUpperCase()})</span>
+        </PageLink>
+      </button>
     </td>
   );
 };
