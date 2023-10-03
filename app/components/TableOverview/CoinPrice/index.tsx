@@ -13,7 +13,7 @@ const CoinPrice: React.FC<CoinPriceProps> = ({ coin, getSymbol }) => {
       <div className="flex items-center">
         <span>
           {symbol}
-          {coin.current_price.toLocaleString("en-US")}
+          {coin?.current_price.toLocaleString("en-US")}
         </span>
       </div>
     </td>

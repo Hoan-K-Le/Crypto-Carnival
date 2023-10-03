@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+table.border-collapse {
+  border-collapse: separate;
+  border-spacing: 0 10px; /* Adjust the 10px value to your preferred spacing */
+}
+
+tr.rounded-2xl {
+  border: 1px solid black;
+  height: 50px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
