@@ -13,6 +13,7 @@ import {
   BiHomeAlt2,
   BiGitCompare,
 } from "react-icons/bi";
+import { HiOutlineSwitchVertical } from "react-icons/hi";
 
 import { RiHome5Fill } from "react-icons/ri";
 import {
@@ -44,6 +45,7 @@ const icons: Icons = {
   home: BiHomeAlt2,
   homeSolid: RiHome5Fill,
   compare: BiGitCompare,
+  converterSwap: HiOutlineSwitchVertical,
 };
 
 type props = {
