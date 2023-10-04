@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-
 import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { TableDataProps } from "@/app/components/TableOverview/TableDataProps";
 import Icon from "@/app/components/Icon/Icon";
+import { useDispatch } from "react-redux";
+import { fetchGraphData } from "@/app/store/ChartSelectorData";
 import getSymbol from "@/app/utilities/symbol";
 import { Line } from "react-chartjs-2";
 import {
@@ -21,10 +22,6 @@ interface CoinType {
   symbol: string;
   current_price: number;
 }
-
-import { useDispatch } from "react-redux";
-import { fetchGraphData } from "@/app/store/ChartSelectorData";
-
 const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -53,7 +50,6 @@ const options = {
     },
   },
 };
-
 function Converter() {
   const [selectedCoinsData, setSelectedCoinsData] = useState<TableDataProps[]>(
     []
@@ -135,7 +131,6 @@ function Converter() {
       }
     };
     fetchCoins();
-
     selectedCoins.forEach(({ id }, index) => fetchChartData(id, index));
   }, [selectedCoins]);
 
