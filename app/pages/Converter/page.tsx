@@ -63,6 +63,8 @@ function Converter() {
   });
   const [coinAmount, setCountAmount] = useState<string>("");
   const [swap, setIsSwap] = useState<boolean>(false);
+  const [days, setDays] = useState(["1", "7", "14", "30", "max"]);
+  const [selectedDays, setSelectedDays] = useState("7");
   const dispatch = useDispatch<AppDispatch>();
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const selectedCoins = useAppSelector(state => state.selectCoin);
@@ -78,6 +80,8 @@ function Converter() {
         fetchGraphData({
           currency: currentCurrency,
           name: coin,
+          days: selectedDays,
+          daily: selectedDays === "1" ? "" : "daily",
         })
       );
       const prices = chartData.payload.prices.map(
@@ -102,6 +106,10 @@ function Converter() {
     }
   };
 
+  const handleSelectDay = (day: string) => {
+    setSelectedDays(day);
+  };
+
   const handleSwap = () => {
     setIsSwap(!swap);
     setSelectedCoinsData(prevData => [...prevData.reverse()]);
@@ -119,6 +127,7 @@ function Converter() {
   };
 
   useEffect(() => {
+    console.log(selectedDays);
     const fetchCoins = () => {
       try {
         const selectedCoinIds = selectedCoins.map(coin => coin.id);
@@ -132,7 +141,7 @@ function Converter() {
     };
     fetchCoins();
     selectedCoins.forEach(({ id }, index) => fetchChartData(id, index));
-  }, [selectedCoins]);
+  }, [selectedCoins, selectedDays]);
 
   const coinToSell = swap ? selectedCoinsData[1] : selectedCoinsData[0];
   const coinToBuy = swap ? selectedCoinsData[0] : selectedCoinsData[1];
@@ -157,6 +166,17 @@ function Converter() {
         pointRadius: 0,
       },
     ],
+  };
+
+  const convertToTimeFrame = (day: string) => {
+    if (Number(day) <= 14) {
+      return day.toString() + "D";
+    } else if (day === "max") {
+      return day;
+    } else {
+      day = "1";
+      return day + "M";
+    }
   };
 
   return (
@@ -248,13 +268,23 @@ function Converter() {
       {/* days of the graphs selector */}
       <div className=" mt-8 w-[463px]">
         <ul className="flex gap-4 justify-between px-4 py-2 rounded-xl bg-[#CCCCFA] bg-opacity-50">
-          <li>1D</li>
-          <li>7D</li>
-          <li>14D</li>
-          <li>1M</li>
-          <li>1W</li>
-          <li>1Y</li>
-          <li>5Y</li>
+          {days?.map(day => (
+            <li
+              className={`${
+                selectedDays === day
+                  ? "bg-[#6161D6] bg-opacity-50 text-[#181825]"
+                  : "text-[#424286] bg-trasparent"
+              }cursor-pointer rounded-lg px-4 py-2`}
+              value={day}
+            >
+              <button
+                className="uppercase"
+                onClick={() => handleSelectDay(day)}
+              >
+                {convertToTimeFrame(day)}
+              </button>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
