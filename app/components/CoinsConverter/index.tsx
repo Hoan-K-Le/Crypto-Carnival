@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import PageLink from "../links/PageLink";
+import Link from "next/link";
 
 const CoinsConverter = () => {
   const [isCoinsActive, setCoinsActive] = useState(true);
@@ -19,17 +20,19 @@ const CoinsConverter = () => {
   return (
     <div className="flex my-12 px-24">
       <div className="bg-white rounded-xl dark:bg-[#191925] dark:text-[#ffffff] flex">
-        <button
+        <Link
           onClick={handleCoinsClick}
           className={`${
             isCoinsActive
               ? "bg-[#6161D6] bg-opacity-50 text-white"
               : "text-[#424286]"
           } px-20 py-4 rounded-lg text-lg`}
+          href="/"
         >
-          <PageLink href="/" text="Coins" />
-        </button>
-        <button
+          Coins
+        </Link>
+        <Link
+          href="../pages/Converter"
           onClick={handleConverterClick}
           className={`${
             isConverterActive
@@ -37,8 +40,8 @@ const CoinsConverter = () => {
               : "text-[#424286]"
           } py-4 px-20 rounded-lg text-lg`}
         >
-          <PageLink href="../pages/Converter" text="Converter" />
-        </button>
+          Converter
+        </Link>
       </div>
     </div>
   );
