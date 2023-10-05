@@ -4,9 +4,17 @@ import axios from "axios";
 
 export const fetchGraphData = createAsyncThunk(
   "coinGraph/getCoinGraph",
-  async ({ currency, name }: { currency: string; name: string }, thunkAPI) => {
+  async (
+    {
+      currency,
+      name,
+      days,
+      daily,
+    }: { currency: string; name: string; days: string; daily: string },
+    thunkAPI
+  ) => {
     try {
-      const url = `https://api.coingecko.com/api/v3/coins/${name}/market_chart?vs_currency=${currency}&days=30&interval=daily`;
+      const url = `https://api.coingecko.com/api/v3/coins/${name}/market_chart?vs_currency=${currency}&days=${days}&interval=${daily}`;
       const { data } = await axios.get(url);
       return data;
     } catch (err) {

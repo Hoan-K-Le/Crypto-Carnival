@@ -254,7 +254,6 @@ export default function LineChart() {
         label: "Coin One",
         data: coins.find(coin => coin.name === "coinOne")?.prices || [],
         borderColor: "#7878FA",
-
         backgroundColor:
           coins.find(coin => coin.name === "coinOne")?.canvasGradient ||
           "transparent",
