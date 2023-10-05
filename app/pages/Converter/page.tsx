@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { TableDataProps } from "@/app/components/TableOverview/TableDataProps";
 import Icon from "@/app/components/Icon/Icon";
-import { useDispatch } from "react-redux";
 import { fetchGraphData } from "@/app/store/ChartSelectorData";
 import getSymbol from "@/app/utilities/symbol";
-import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,12 +16,20 @@ import {
   Filler,
 } from "chart.js";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
-interface CoinType {
-  id: string;
-  image: string;
-  symbol: string;
-  current_price: number;
-}
+
+type ChartData = {
+  labels: (number | string)[];
+  datasets: {
+    label: string;
+    data: number[];
+    fill: boolean;
+    borderColor: string;
+    yAxisID: string;
+    pointRadius: number;
+    tension: number;
+  }[];
+};
+
 const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -50,6 +58,18 @@ const options = {
     },
   },
 };
+
+const convertToTimeFrame = (day: string) => {
+  if (Number(day) <= 14) {
+    return day.toString() + "D";
+  } else if (day === "max") {
+    return day;
+  } else {
+    day = "1";
+    return day + "M";
+  }
+};
+
 function Converter() {
   const [selectedCoinsData, setSelectedCoinsData] = useState<TableDataProps[]>(
     []
@@ -63,8 +83,8 @@ function Converter() {
   });
   const [coinAmount, setCountAmount] = useState<string>("");
   const [swap, setIsSwap] = useState<boolean>(false);
-  const [days, setDays] = useState(["1", "7", "14", "30", "max"]);
-  const [selectedDays, setSelectedDays] = useState("7");
+  const [days, setDays] = useState<string[]>(["1", "7", "14", "30", "max"]);
+  const [selectedDays, setSelectedDays] = useState<string>("7");
   const dispatch = useDispatch<AppDispatch>();
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const selectedCoins = useAppSelector(state => state.selectCoin);
@@ -74,7 +94,7 @@ function Converter() {
     hour12: false,
   });
 
-  const fetchChartData = async (coin: any, index: number) => {
+  const fetchChartData = async (coin: string, index: number) => {
     try {
       const chartData = await dispatch(
         fetchGraphData({
@@ -127,56 +147,60 @@ function Converter() {
   };
 
   useEffect(() => {
-    console.log(selectedDays);
-    const fetchCoins = () => {
+    const fetchCoins = async () => {
       try {
         const selectedCoinIds = selectedCoins.map(coin => coin.id);
         const getSelectedCoins = coinsData
           .filter(c => selectedCoinIds.includes(c.id))
           .slice(0, 2);
         setSelectedCoinsData(getSelectedCoins);
+        const fetchPromsies = getSelectedCoins.map(async ({ id }, index) => {
+          try {
+            return await fetchChartData(id, index);
+          } catch (err) {
+            console.log(`ERROR IN FETCHPROMISE CONVERT PAGE ${err}`);
+          }
+        });
+        await Promise.all(fetchPromsies);
       } catch (err) {
         console.log(`ERROR IN CONVERT ${err}`);
       }
     };
     fetchCoins();
-    selectedCoins.forEach(({ id }, index) => fetchChartData(id, index));
   }, [selectedCoins, selectedDays]);
 
   const coinToSell = swap ? selectedCoinsData[1] : selectedCoinsData[0];
   const coinToBuy = swap ? selectedCoinsData[0] : selectedCoinsData[1];
 
-  const data = {
-    labels: chartData.dates[0].map(date => new Date(date).getDate()), // assuming both coins have data for the same dates
+  const data: ChartData = {
+    labels:
+      selectedDays === "1"
+        ? chartData?.dates[0].map(date =>
+            new Date(date).toLocaleTimeString("en-US", {
+              hour12: true,
+            })
+          )
+        : chartData?.dates[0].map(date => new Date(date).getDate()),
     datasets: [
       {
         label: "Coin 1 Prices",
-        data: chartData.prices[0],
+        data: chartData?.prices[0],
         fill: false,
         borderColor: "#7878FA",
         yAxisID: "y-axis-1",
         pointRadius: 0,
+        tension: 0.4,
       },
       {
         label: "Coin 2 Prices",
-        data: chartData.prices[1],
+        data: chartData?.prices[1],
         fill: false,
         borderColor: "#D878FA",
         yAxisID: "y-axis-2",
         pointRadius: 0,
+        tension: 0.4,
       },
     ],
-  };
-
-  const convertToTimeFrame = (day: string) => {
-    if (Number(day) <= 14) {
-      return day.toString() + "D";
-    } else if (day === "max") {
-      return day;
-    } else {
-      day = "1";
-      return day + "M";
-    }
   };
 
   return (
@@ -270,6 +294,7 @@ function Converter() {
         <ul className="flex gap-4 justify-between px-4 py-2 rounded-xl bg-[#CCCCFA] bg-opacity-50">
           {days?.map(day => (
             <li
+              key={day}
               className={`${
                 selectedDays === day
                   ? "bg-[#6161D6] bg-opacity-50 text-[#181825]"
