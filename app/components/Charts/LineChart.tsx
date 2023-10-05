@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Line } from "react-chartjs-2";
+import { useDispatch } from "react-redux";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,12 +10,10 @@ import {
   LineElement,
   Filler,
 } from "chart.js";
-
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 import { useAppSelector, AppDispatch } from "@/app/store/store";
-import { useDispatch } from "react-redux";
 import { fetchGraphData } from "@/app/store/ChartSelectorData";
 import getSymbol from "../../utilities/symbol";
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
 const options = {
   responsive: true,
@@ -48,6 +47,22 @@ const options = {
       },
     },
   },
+};
+
+type ChartData = {
+  labels: (number | string)[];
+  datasets: {
+    label: string;
+    data: number[];
+    fill: boolean;
+    borderColor: string;
+    yAxisID: string;
+    pointRadius: number;
+    tension: number;
+    pointStyle: string;
+    order: number;
+    backgroundColor: any;
+  }[];
 };
 
 type InitialCoinProps = {
@@ -103,7 +118,11 @@ const initialCoins: InitialCoinProps[] = [
   },
 ];
 
-export default function LineChart() {
+type LineChartProps = {
+  selectedDay: string;
+};
+
+export default function LineChart({ selectedDay }: LineChartProps) {
   const [coins, setCoins] = useState(initialCoins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const currentCoins = useAppSelector(state => state.selectCoin);
@@ -115,12 +134,14 @@ export default function LineChart() {
     return `${currentCoins[index].id} (${currentCoins[index].symbol})`;
   };
 
-  const fetchChartData = async (coin: any, index: number) => {
+  const fetchChartData = async (coin: string, index: number) => {
     try {
       const chartData = await dispatch(
         fetchGraphData({
           currency: currentCurrency,
           name: coin,
+          days: selectedDay,
+          daily: selectedDay === "1" ? "" : "daily",
         })
       );
       if (!coin) return;
@@ -240,14 +261,19 @@ export default function LineChart() {
         })
       );
     }
-  }, [currentCurrency, currentCoins]);
+  }, [currentCurrency, currentCoins, selectedDay]);
 
   const combinedDate = Array.from(
     new Set(coins.flatMap(coin => coin.dates))
   ).sort((a, b) => a - b);
 
-  const data = {
-    labels: combinedDate.map(date => new Date(date).getDate()),
+  const data: ChartData = {
+    labels:
+      selectedDay === "1"
+        ? coins[0]?.dates.map(date =>
+            new Date(date).toLocaleTimeString("en-US", { hour12: true })
+          )
+        : coins[0]?.dates.map(date => new Date(date).getDate()),
     datasets: [
       {
         fill: true,
@@ -295,7 +321,7 @@ export default function LineChart() {
   };
 
   return (
-    <div className="w-full h-[400px] rounded-lg">
+    <div className="w-full rounded-lg">
       {!coins[1]?.current_price && !coins[2]?.current_price ? (
         <div className="flex flex-col gap-2">
           <p className="text-[#191932] text-xl uppercase">
@@ -311,7 +337,7 @@ export default function LineChart() {
         </div>
       ) : (
         <>
-          <p className="text-[#181825] text-3xl">
+          <p className="text-[#181825] text-3xl py-9">
             {new Date(coins[0]?.current_date).toDateString()}
           </p>
           <Line ref={chartRef} data={data} options={options} />
