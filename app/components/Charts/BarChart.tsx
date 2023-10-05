@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { fetchGraphData } from "@/app/store/ChartSelectorData";
 import getSymbol from "@/app/utilities/symbol";
 ChartJS.register(CategoryScale, BarElement);
+import { formatNumber } from "@/app/utilities/formatNumber";
 
 const options = {
   responsive: true,
@@ -312,20 +313,19 @@ export default function BarChart({ selectedDay }: BarChartProps) {
             {new Date(coins[0]?.current_date).toDateString()}
           </p>
           <Bar ref={chartRef} data={data} options={options} />
-          <div className="flex gap-10 mt-2">
+          <div className="flex justify-between gap-10 mt-2">
             {coins.map(
               (coin, i) =>
                 coin?.current_price !== 0 && (
-                  <div key={i} className="flex items-center gap-2">
-                    <div
-                      className={`h-[14px] w-[14px] flex items-center rounded gap-2`}
-                    />
-                    <p className="flex items-center uppercase">
-                      {coin?.coin_name}
-                    </p>
+                  <div
+                    key={coin?.coin_name}
+                    className="flex items-center gap-2"
+                  >
+                    <div className={`h-[14px] w-[14px] rounded gap-2`} />
+                    <p className="uppercase">{coin?.coin_name}</p>
                     <span className="text-[#424286] flex items-center">
                       {getSymbol(currentCurrency)}{" "}
-                      {coin?.current_price.toFixed(2)}
+                      {formatNumber(coin?.current_price)}
                     </span>
                   </div>
                 )

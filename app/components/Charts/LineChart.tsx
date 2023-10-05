@@ -345,7 +345,10 @@ export default function LineChart({ selectedDay }: LineChartProps) {
             {coins.map(
               (coin, i) =>
                 coin?.current_price !== 0 && (
-                  <div key={i} className="flex items-center gap-2">
+                  <div
+                    key={coin?.coin_name}
+                    className="flex items-center gap-2"
+                  >
                     <div className={`h-[14px] w-[14px] rounded gap-2`} />
                     <p className="flex items-center uppercase">
                       {coin?.coin_name}
