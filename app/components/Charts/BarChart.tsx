@@ -78,8 +78,8 @@ const initialCoins: InitialCoinProps[] = [
     dates: [],
     coin_name: "",
     gradientColor: {
-      start: "rgba(116, 116, 242, 0.6)",
-      end: "rgba(116, 116, 242, 1)",
+      start: "rgba(116, 116, 242, 1)",
+      end: "rgba(116, 116, 242, 0.6)",
     },
   },
   {
@@ -90,8 +90,8 @@ const initialCoins: InitialCoinProps[] = [
     dates: [],
     coin_name: "",
     gradientColor: {
-      start: "rgba(216, 120, 250,0.6)",
-      end: "rgba(216, 120, 250, 1)",
+      start: "rgba(216, 120, 250,1)",
+      end: "rgba(216, 120, 250, 0.6)",
     },
   },
   {
@@ -103,7 +103,7 @@ const initialCoins: InitialCoinProps[] = [
     coin_name: "",
     gradientColor: {
       start: "rgba(30, 213, 191,1)",
-      end: "rgba(145, 252, 228, 1)",
+      end: "rgba(145, 252, 228, 0.6)",
     },
   },
 ];
@@ -196,7 +196,7 @@ export default function BarChart({ selectedDay }: BarChartProps) {
     end: string
   ) => {
     if (ctx) {
-      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      const gradient = ctx.createLinearGradient(0, 0, 0, 210);
       gradient.addColorStop(0, start);
       gradient.addColorStop(1, end);
       return gradient;
@@ -271,7 +271,9 @@ export default function BarChart({ selectedDay }: BarChartProps) {
         fill: true,
         label: "Coin One",
         data: coins.find(coin => coin.name === "coinOne")?.prices || [],
-        backgroundColor: "rgba(116, 116, 242, 0.6)",
+        backgroundColor:
+          coins.find(coin => coin.name === "coinOne")?.canvasGradient ||
+          "transparent",
         yAxisID: "y-axis-1",
         order: 1,
       },
@@ -279,7 +281,9 @@ export default function BarChart({ selectedDay }: BarChartProps) {
         fill: true,
         label: "Coin Two",
         data: coins.find(coin => coin.name === "coinTwo")?.prices || [],
-        backgroundColor: "rgba(216, 120, 250,0.6)",
+        backgroundColor:
+          coins.find(coin => coin.name === "coinTwo")?.canvasGradient ||
+          "transparent",
         yAxisID: "y-axis-2",
         order: 2,
       },
@@ -287,7 +291,8 @@ export default function BarChart({ selectedDay }: BarChartProps) {
         fill: false,
         label: "Coin Three",
         data: coins.find(coin => coin.name === "coinThree")?.prices || [],
-        backgroundColor: "rgba(145, 252, 228, 0.6)",
+        backgroundColor: coins.find(coin => coin.name === "coinThree")
+          ?.canvasGradient,
         yAxisID: "y-axis-3",
         order: 3,
       },
