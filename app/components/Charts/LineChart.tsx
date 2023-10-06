@@ -13,6 +13,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { fetchGraphData } from "@/app/store/ChartSelectorData";
+import { getDaily } from "@/app/utilities/getDaily";
 import getSymbol from "../../utilities/symbol";
 
 const options = {
@@ -141,7 +142,7 @@ export default function LineChart({ selectedDay }: LineChartProps) {
           currency: currentCurrency,
           name: coin,
           days: selectedDay,
-          daily: selectedDay === "1" ? "" : "daily",
+          daily: getDaily(selectedDay),
         })
       );
       if (!coin) return;
@@ -172,6 +173,9 @@ export default function LineChart({ selectedDay }: LineChartProps) {
               prices: [],
               coin_name: "",
             };
+            if (isMissing)
+              return { ...c, ...defaultCoinData } as InitialCoinProps;
+
             const updatedCoinData = {
               current_price: getCurrentData.length
                 ? getCurrentData[0][1]
@@ -182,8 +186,6 @@ export default function LineChart({ selectedDay }: LineChartProps) {
               coin_name: getCoinName(index),
             };
 
-            if (isMissing)
-              return { ...c, ...defaultCoinData } as InitialCoinProps;
             if (matchingCoin)
               return {
                 ...c,
