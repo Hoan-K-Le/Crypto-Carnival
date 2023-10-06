@@ -2,12 +2,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, BarElement } from "chart.js";
-import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { useDispatch } from "react-redux";
+import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { fetchGraphData } from "@/app/store/ChartSelectorData";
 import getSymbol from "@/app/utilities/symbol";
 ChartJS.register(CategoryScale, BarElement);
 import { formatNumber } from "@/app/utilities/formatNumber";
+import { getDaily } from "@/app/utilities/getDaily";
 
 const options = {
   responsive: true,
@@ -122,8 +123,6 @@ export default function BarChart({ selectedDay }: BarChartProps) {
     return `${currentCoins[index].id} (${currentCoins[index].symbol})`;
   };
 
-  const chartRef = useRef();
-
   const fetchChartData = async (coin: string, index: number) => {
     if (!currentCoins[0]) return;
     try {
@@ -132,7 +131,7 @@ export default function BarChart({ selectedDay }: BarChartProps) {
           currency: currentCurrency,
           name: coin,
           days: selectedDay,
-          daily: selectedDay === "1" ? "" : "daily",
+          daily: getDaily(selectedDay),
         })
       );
       if (!coin) return;
@@ -155,7 +154,6 @@ export default function BarChart({ selectedDay }: BarChartProps) {
           prevState.map((c, idx) => {
             const currentCoin = currentCoins[idx];
             const isMissing = !currentCoin || !currentCoin.id;
-            const matchingCoin = c.name === coins[index].name;
             const defaultCoinData = {
               current_date: "",
               current_price: 0,
@@ -163,6 +161,9 @@ export default function BarChart({ selectedDay }: BarChartProps) {
               prices: [],
               coin_name: "",
             };
+            if (isMissing)
+              return { ...c, ...defaultCoinData } as InitialCoinProps;
+            const matchingCoin = c.name === coins[index].name;
             const updatedCoinData = {
               current_price: getCurrentData.length
                 ? getCurrentData[0][1]
@@ -172,9 +173,6 @@ export default function BarChart({ selectedDay }: BarChartProps) {
               dates: date,
               coin_name: getCoinName(index),
             };
-
-            if (isMissing)
-              return { ...c, ...defaultCoinData } as InitialCoinProps;
             if (matchingCoin)
               return {
                 ...c,
@@ -255,10 +253,6 @@ export default function BarChart({ selectedDay }: BarChartProps) {
     }
   }, [currentCurrency, currentCoins, selectedDay]);
 
-  const combinedDate = Array.from(
-    new Set(coins.flatMap(coin => coin.dates))
-  ).sort((a, b) => a - b);
-
   const data: ChartData = {
     labels:
       selectedDay === "1"
@@ -310,14 +304,14 @@ export default function BarChart({ selectedDay }: BarChartProps) {
           <p className="text-[#424286]">
             {new Date(coins[0]?.current_date).toDateString()}
           </p>
-          <Bar ref={chartRef} data={data} options={options} />
+          <Bar data={data} options={options} />
         </div>
       ) : (
         <div className="w-full ">
           <p className="text-[#181825] text-3xl py-9">
             {new Date(coins[0]?.current_date).toDateString()}
           </p>
-          <Bar ref={chartRef} data={data} options={options} />
+          <Bar data={data} options={options} />
           <div className="flex justify-between gap-10 mt-2">
             {coins.map(
               (coin, i) =>
