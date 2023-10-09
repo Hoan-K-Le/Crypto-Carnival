@@ -16,7 +16,7 @@ import {
   Filler,
 } from "chart.js";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
-
+import CoinsConverter from "@/app/components/CoinsConverter";
 type ChartData = {
   labels: (number | string)[];
   datasets: {
@@ -204,113 +204,116 @@ function Converter() {
   };
 
   return (
-    <div className="px-24">
-      <div>
-        <p className="text-xl mb-2">Online currency converter</p>
-        <span>
-          {currentDate.toLocaleDateString()} {currentTime}
-        </span>
-      </div>
-      <div className="flex relative items-center mt-4 justify-between gap-4">
-        {/* coin 1 */}
-        <div className="p-5 bg-white rounded-2xl w-full">
-          <p className="text-sm">You sell</p>
-          <div key={coinToSell?.id} className="p-2">
-            <div className="flex gap-2 border-b-2 border-[#353570] py-6 mb-4 items-center">
-              <img
-                className="w-[25px] h-[25px]"
-                src={coinToSell?.image}
-                alt={coinToSell?.id}
-              />
-              <p className="text-xl uppercase">
-                {coinToSell?.id} ({coinToSell?.symbol})
-              </p>
-              <input
-                className="ml-auto border-b-2 pb-2"
-                type="text"
-                placeholder="How many coins"
-                value={coinAmount}
-                onChange={handleCoinAmount}
-              />
-            </div>
-            <p className="uppercase text-sm">
-              1 {coinToSell?.id} = {getSymbol(currentCurrency)}{" "}
-              {coinToSell?.current_price}
-            </p>
-          </div>
-        </div>
-        {/* end of coin 1 */}
-        <button
-          onClick={handleSwap}
-          className="absolute text-2xl text-white rounded-full p-2 bg-[#353570] right-0 left-0 mr-auto ml-auto"
-        >
-          <Icon iconVariant="converterSwap" />
-        </button>
-        {/* coin2 */}
-        <div className="p-5 bg-white rounded-2xl w-full">
-          <p className="text-sm">You buy</p>
-          <div key={coinToBuy?.id} className="p-2">
-            <div className="flex gap-2 border-b-2 border-[#353570] py-6 mb-4 items-center">
-              <img
-                className="w-[25px] h-[25px]"
-                src={coinToBuy?.image}
-                alt={coinToBuy?.id}
-              />
-              <p className="text-xl uppercase">
-                {coinToBuy?.id} ({coinToBuy?.symbol})
-              </p>
-              <p className="ml-auto">
-                {calculateCoin(
-                  coinToSell?.current_price || 0,
-                  coinToBuy?.current_price || 0
-                )}
-              </p>
-            </div>
-            <p className="uppercase text-sm">
-              1 {coinToBuy?.id} = {getSymbol(currentCurrency)}{" "}
-              {coinToBuy?.current_price}
-            </p>
-          </div>
-        </div>
-        {/* end of coin 2 */}
-      </div>
-      <div className=" gap-3 mt-16 h-[293px] bg-white uppercase p-4 rounded-xl w-full">
-        <div className="flex gap-4 text-xl w-full mb-10">
+    <div>
+      <CoinsConverter />
+      <div className="px-24">
+        <div>
+          <p className="text-xl mb-2">Online currency converter</p>
           <span>
-            {coinToSell?.id}({coinToSell?.symbol})
-          </span>
-          <span className="text-[#353570] text-opacity-60">To</span>
-          <span>
-            {coinToBuy?.id}({coinToBuy?.symbol})
+            {currentDate.toLocaleDateString()} {currentTime}
           </span>
         </div>
-        <div className="h-[174px] w-full">
-          <Line data={data} options={options} />
+        <div className="flex relative items-center mt-4 justify-between gap-4">
+          {/* coin 1 */}
+          <div className="p-5 bg-white rounded-2xl w-full">
+            <p className="text-sm">You sell</p>
+            <div key={coinToSell?.id} className="p-2">
+              <div className="flex gap-2 border-b-2 border-[#353570] py-6 mb-4 items-center">
+                <img
+                  className="w-[25px] h-[25px]"
+                  src={coinToSell?.image}
+                  alt={coinToSell?.id}
+                />
+                <p className="text-xl uppercase">
+                  {coinToSell?.id} ({coinToSell?.symbol})
+                </p>
+                <input
+                  className="ml-auto border-b-2 pb-2"
+                  type="text"
+                  placeholder="How many coins"
+                  value={coinAmount}
+                  onChange={handleCoinAmount}
+                />
+              </div>
+              <p className="uppercase text-sm">
+                1 {coinToSell?.id} = {getSymbol(currentCurrency)}{" "}
+                {coinToSell?.current_price}
+              </p>
+            </div>
+          </div>
+          {/* end of coin 1 */}
+          <button
+            onClick={handleSwap}
+            className="absolute text-2xl text-white rounded-full p-2 bg-[#353570] right-0 left-0 mr-auto ml-auto"
+          >
+            <Icon iconVariant="converterSwap" />
+          </button>
+          {/* coin2 */}
+          <div className="p-5 bg-white rounded-2xl w-full">
+            <p className="text-sm">You buy</p>
+            <div key={coinToBuy?.id} className="p-2">
+              <div className="flex gap-2 border-b-2 border-[#353570] py-6 mb-4 items-center">
+                <img
+                  className="w-[25px] h-[25px]"
+                  src={coinToBuy?.image}
+                  alt={coinToBuy?.id}
+                />
+                <p className="text-xl uppercase">
+                  {coinToBuy?.id} ({coinToBuy?.symbol})
+                </p>
+                <p className="ml-auto">
+                  {calculateCoin(
+                    coinToSell?.current_price || 0,
+                    coinToBuy?.current_price || 0
+                  )}
+                </p>
+              </div>
+              <p className="uppercase text-sm">
+                1 {coinToBuy?.id} = {getSymbol(currentCurrency)}{" "}
+                {coinToBuy?.current_price}
+              </p>
+            </div>
+          </div>
+          {/* end of coin 2 */}
         </div>
-      </div>
+        <div className=" gap-3 mt-16 h-[293px] bg-white uppercase p-4 rounded-xl w-full">
+          <div className="flex gap-4 text-xl w-full mb-10">
+            <span>
+              {coinToSell?.id}({coinToSell?.symbol})
+            </span>
+            <span className="text-[#353570] text-opacity-60">To</span>
+            <span>
+              {coinToBuy?.id}({coinToBuy?.symbol})
+            </span>
+          </div>
+          <div className="h-[174px] w-full">
+            <Line data={data} options={options} />
+          </div>
+        </div>
 
-      {/* days of the graphs selector */}
-      <div className=" mt-8 w-[463px]">
-        <ul className="flex gap-4 justify-between px-4 py-2 rounded-xl bg-[#CCCCFA] bg-opacity-50">
-          {days?.map(day => (
-            <li
-              key={day}
-              className={`${
-                selectedDays === day
-                  ? "bg-[#6161D6] bg-opacity-50 text-[#181825]"
-                  : "text-[#424286] bg-trasparent"
-              }cursor-pointer rounded-lg px-4 py-2`}
-              value={day}
-            >
-              <button
-                className="uppercase"
-                onClick={() => handleSelectDay(day)}
+        {/* days of the graphs selector */}
+        <div className=" mt-8 w-[463px]">
+          <ul className="flex gap-4 justify-between px-4 py-2 rounded-xl bg-[#CCCCFA] bg-opacity-50">
+            {days?.map(day => (
+              <li
+                key={day}
+                className={`${
+                  selectedDays === day
+                    ? "bg-[#6161D6] bg-opacity-50 text-[#181825]"
+                    : "text-[#424286] bg-trasparent"
+                }cursor-pointer rounded-lg px-4 py-2`}
+                value={day}
               >
-                {convertToTimeFrame(day)}
-              </button>
-            </li>
-          ))}
-        </ul>
+                <button
+                  className="uppercase"
+                  onClick={() => handleSelectDay(day)}
+                >
+                  {convertToTimeFrame(day)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
