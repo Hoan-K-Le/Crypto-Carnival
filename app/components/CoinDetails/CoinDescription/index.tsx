@@ -1,40 +1,41 @@
 import React from "react";
 import Icon from "../../Icon/Icon";
+import { CoinDetailProps } from "@/app/types/coin_detail";
 type CoinDescriptionProp = {
-  coinDetail: {
-    description: { en: string };
-    links: { blockchain_site: string };
-  };
+  coinDetail: CoinDetailProps;
 };
+
 function CoinDescription({ coinDetail }: CoinDescriptionProp) {
+  const {
+    links: { blockchain_site = "" },
+    description: { en = "" },
+  } = coinDetail || {};
+
   return (
     <div className="w-7/12">
       <div>
-        <p
-          className="leading-6"
-          dangerouslySetInnerHTML={{ __html: coinDetail?.description.en }}
-        />
+        <p className="leading-6" dangerouslySetInnerHTML={{ __html: en }} />
         <div className="flex items-center gap-4">
           <a
             className="px-8 py-2 mt-4 rounded-xl bg-white shadow flex items-center gap-2"
-            href={coinDetail?.links.blockchain_site[0]}
+            href={blockchain_site[0]}
             target="_blank"
           >
-            {coinDetail?.links.blockchain_site[0]}
+            {blockchain_site[0]}
             <Icon iconVariant="copy" />
           </a>
           <a
-            href={coinDetail?.links.blockchain_site[1]}
+            href={blockchain_site[1]}
             className="px-8 py-2 mt-4 rounded-xl bg-white shadow flex items-center gap-2"
           >
-            {coinDetail?.links.blockchain_site[1]} <Icon iconVariant="copy" />
+            {blockchain_site[1]} <Icon iconVariant="copy" />
           </a>
         </div>
         <a
-          href={coinDetail?.links.blockchain_site[2]}
+          href={blockchain_site[2]}
           className="px-8 py-2 mt-4 rounded-xl bg-white shadow flex items-center gap-2 w-fit"
         >
-          {coinDetail?.links.blockchain_site[2]} <Icon iconVariant="copy" />
+          {blockchain_site[2]} <Icon iconVariant="copy" />
         </a>
       </div>
     </div>

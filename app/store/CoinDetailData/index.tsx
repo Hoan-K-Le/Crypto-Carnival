@@ -1,5 +1,7 @@
 "use client";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { CoinDetailProps } from "@/app/types/coin_detail";
+import { MarketDataProps } from "@/app/types/market_data";
 import axios from "axios";
 
 export const fetchCoinDetails = createAsyncThunk(
@@ -15,33 +17,16 @@ export const fetchCoinDetails = createAsyncThunk(
   }
 );
 
-export interface CoinDetailProps {
-  coinDetails: {
-    name: string;
-    symbol: string;
-    links: { homepage: string[]; blockchain_site: string[] };
-    image: { small: string };
-    market_data: {
-      current_price: { usd: number };
-      ath: { usd: number };
-      ath_date: { usd: string };
-      ath_change_percentage: { usd: number };
-      atl: { usd: number };
-      atl_change_percentage: { usd: number };
-      atl_date: { usd: string };
-      price_change_percentage_24h: number;
-      market_cap: { usd: number };
-      market_cap_change_percentage_24h: number;
-      fully_diluted_valuation: { usd: number };
-      total_volume: { usd: number };
-      circulating_supply: number;
-      max_supply: number | null;
-    };
-    description: { en: string };
-  }[];
-}
+type CoinDetailsProps = {
+  coinDetails:
+    | (CoinDetailProps &
+        {
+          market_data: MarketDataProps;
+        }[])
+    | [];
+};
 
-const initialState: CoinDetailProps = {
+const initialState: CoinDetailsProps = {
   coinDetails: [],
 };
 
