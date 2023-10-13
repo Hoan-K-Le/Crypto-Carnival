@@ -12,6 +12,10 @@ import {
   BiEuro,
   BiHomeAlt2,
   BiGitCompare,
+  BiCopy,
+  BiLink,
+  BiSolidUpArrow,
+  BiSolidDownArrow,
 } from "react-icons/bi";
 import { HiOutlineSwitchVertical } from "react-icons/hi";
 
@@ -34,8 +38,8 @@ const icons: Icons = {
   chevDown: BiSolidChevronDown,
   sun: BsSunFill,
   moon: BsMoon,
-  arrowUp: PiCaretUpBold,
-  arrowDown: PiCaretDownBold,
+  arrowUp: BiSolidUpArrow,
+  arrowDown: BiSolidDownArrow,
   euro: BiEuro,
   gbp: PiCurrencyGbpLight,
   lightning: BsLightningChargeFill,
@@ -46,6 +50,8 @@ const icons: Icons = {
   homeSolid: RiHome5Fill,
   compare: BiGitCompare,
   converterSwap: HiOutlineSwitchVertical,
+  copy: BiCopy,
+  link: BiLink,
 };
 
 type props = {
