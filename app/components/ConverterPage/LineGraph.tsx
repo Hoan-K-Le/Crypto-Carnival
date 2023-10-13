@@ -52,17 +52,24 @@ const options = {
   },
 };
 
+type ChartDataProp = {
+  dates: (string | number)[][];
+  prices: number[][];
+};
+
+interface LineGraphProps {
+  coinToSell: { id: string; symbol: string };
+  coinToBuy: { id: string; symbol: string };
+  selectedDays: string;
+  chartData: ChartDataProp;
+}
+
 function LineGraph({
   coinToSell,
   coinToBuy,
   selectedDays,
   chartData,
-}: {
-  coinToSell: any;
-  coinToBuy: any;
-  selectedDays: string;
-  chartData: any;
-}) {
+}: LineGraphProps) {
   const data: ChartData = {
     labels:
       selectedDays === "1"

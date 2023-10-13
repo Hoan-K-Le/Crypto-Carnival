@@ -1,11 +1,8 @@
 import React from "react";
+import { TwoCoinConverterProps } from "@/app/types/coin_converter";
 
-type CoinOneProps = {
-  coin: { id: string; symbol: string; image: string; current_price: number };
-  coinAmount: string;
-  title: string;
+type CoinOneProps = TwoCoinConverterProps & {
   handleCoinAmount: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  currencySymbol: string;
 };
 
 function CoinOne({

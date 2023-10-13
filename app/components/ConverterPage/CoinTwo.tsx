@@ -1,10 +1,8 @@
 import React from "react";
+import { TwoCoinConverterProps } from "@/app/types/coin_converter";
 
-type CoinTwoProps = {
-  coin: { id: string; symbol: string; image: string; current_price: number };
-  title: string;
+type CoinTwoProps = TwoCoinConverterProps & {
   coinAvg: () => number;
-  currencySymbol: string;
 };
 
 function CoinTwo({ coin, currencySymbol, coinAvg, title }: CoinTwoProps) {
