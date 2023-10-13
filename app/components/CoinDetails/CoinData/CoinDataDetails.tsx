@@ -1,17 +1,18 @@
 import React from "react";
-import { CoinDetailProps } from "@/app/types/coin_detail";
+
+interface CoinDataDetailsProps {
+  title: string;
+  data: string | number;
+  symbol?: string;
+  frontSymbol?: boolean;
+}
 
 function CoinDataDetails({
   title,
   data,
   symbol,
   frontSymbol,
-}: {
-  title: string;
-  data: number | string;
-  symbol?: string;
-  frontSymbol?: boolean;
-}) {
+}: CoinDataDetailsProps) {
   const displayData =
     frontSymbol === true ? `${symbol}${data}` : `${data}${symbol}`;
 
