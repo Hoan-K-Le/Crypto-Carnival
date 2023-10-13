@@ -3,17 +3,19 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useAppSelector, AppDispatch } from "@/app/store/store";
 import getSymbol from "@/app/utilities/symbol";
 import getAvg from "@/app/utilities/getAvg";
-import Icon from "../Icon/Icon";
 import { useDispatch } from "react-redux";
 import {
   updateSelectedCoin,
   removeSelectedCoin,
 } from "@/app/store/SelectCoinReducer";
+import Icon from "../Icon/Icon";
+
 const CoinCarousel = () => {
   const [selectCoin, setSelectCoin] = useState<any>([]);
   const coinsData = useAppSelector(state => state.coins.coins);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const dispatch = useDispatch<AppDispatch>();
+
   const slideLeft = () => {
     const slider = document.getElementById("slider");
     if (slider) {
@@ -27,6 +29,7 @@ const CoinCarousel = () => {
       slider.scrollLeft += slider.clientWidth;
     }
   };
+
   const handleCoinClick = (coin: any) => {
     let newSelectCoin = [...selectCoin];
     if (newSelectCoin.includes(coin)) {
@@ -48,6 +51,7 @@ const CoinCarousel = () => {
   };
 
   useEffect(() => {}, [coinsData, selectCoin]);
+
   return (
     <div className="relative flex items-center mb-5">
       <MdChevronLeft
