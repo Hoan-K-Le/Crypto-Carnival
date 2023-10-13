@@ -19,9 +19,7 @@ function ChartContainer() {
   const handleSelectDay = (day: string) => {
     setSelectedDays(day);
   };
-  useEffect(() => {
-    console.log("selectedDay:", selectedDays);
-  }, [selectedDays]);
+  useEffect(() => {}, [selectedDays]);
   return (
     <div className=" flex flex-col w-full ">
       <div className="flex">
