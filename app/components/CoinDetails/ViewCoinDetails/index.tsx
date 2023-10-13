@@ -33,7 +33,7 @@ function ViewCoinDetailsPage({ coinDetail }: ViewCoinDetailsPageProp) {
     } else {
       setLoading(false);
     }
-  }, [coinDetail]);
+  }, []);
 
   return (
     <>

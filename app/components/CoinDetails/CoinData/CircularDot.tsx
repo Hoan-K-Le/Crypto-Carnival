@@ -1,12 +1,11 @@
 import React from "react";
 
-function CircularDot({
-  changeDotColor,
-  data,
-}: {
+interface CircularDotProps {
   changeDotColor: string;
   data: number;
-}) {
+}
+
+function CircularDot({ changeDotColor, data }: CircularDotProps) {
   return (
     <div className="flex items-center gap-1">
       <div
