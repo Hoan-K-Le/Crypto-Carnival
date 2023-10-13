@@ -67,7 +67,7 @@ const NavBar = () => {
     fetchData();
   }, [activePage]);
   return (
-    <nav className="font-medium shadow-2xl bg-white p-4 dark:bg-[#13121A] dark:text-[#ffffff] flex items-center justify-around pt-4 text-lg ">
+    <nav className="font-medium shadow-xs bg-white p-4 dark:bg-[#13121A] dark:text-[#ffffff] flex items-center justify-around pt-4 text-lg ">
       <div className="flex items-center gap-2">
         <img
           className="h-[50px] w-[50px]"
@@ -104,7 +104,6 @@ const NavBar = () => {
             </button>
           ))}
       </div>
-
       <form
         className=" flex items-center gap-5"
         onSubmit={handleSubmit}
