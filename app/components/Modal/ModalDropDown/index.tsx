@@ -2,7 +2,7 @@ import { useState } from "react";
 import Icon from "../../Icon/Icon";
 
 type CoinSelectionProps = {
-  coinAsset: { name: string };
+  name: string;
   handleSelectCoin: (
     event: React.MouseEvent<HTMLButtonElement>,
     coidId: string
@@ -13,7 +13,7 @@ type CoinSelectionProps = {
 };
 
 function CoinSelectionList({
-  coinAsset,
+  name,
   handleSelectCoin,
   coins,
   handleViewCoins,
@@ -24,9 +24,7 @@ function CoinSelectionList({
       onClick={handleViewCoins}
       className="cursor-pointer select-none py-2 px-4 relative border rounded-xl flex justify-between w-full items-center"
     >
-      <p className="w-full text-left">
-        {coinAsset.name ? coinAsset.name : "Select Coin"}
-      </p>
+      <p className="w-full text-left">{name ? name : "Select Coin"}</p>
       <Icon iconVariant="arrowDown" />
       <div
         className={`absolute ${

@@ -118,7 +118,7 @@ function Modal({ openModal, setOpenModal, setAsset }: ModalProps) {
           <div className="flex flex-col justify-between w-7/12">
             <div className="flex flex-col gap-6">
               <CoinSelectionList
-                coinAsset={coinAsset}
+                name={name}
                 handleSelectCoin={handleSelectCoin}
                 coins={coins}
                 handleViewCoins={handleViewCoins}
