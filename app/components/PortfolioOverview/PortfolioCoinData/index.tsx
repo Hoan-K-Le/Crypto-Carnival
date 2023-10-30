@@ -1,4 +1,11 @@
-import React from "react";
+type PortfolioCoinData = {
+  symbol: string;
+  data: string;
+  title: string;
+  titleTwo: string;
+  ProgressBar?: React.ReactElement;
+  dataPercentage: string;
+};
 
 function PortfolioCoinData({
   symbol,
@@ -7,7 +14,7 @@ function PortfolioCoinData({
   titleTwo,
   ProgressBar,
   dataPercentage,
-}: any) {
+}: PortfolioCoinData) {
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="border p-2">
@@ -21,7 +28,6 @@ function PortfolioCoinData({
         <div className="flex items-center gap-2 ">
           <p className="text-xl">{dataPercentage}%</p>
           {ProgressBar}
-          {/* <ProgressBar data={20} changeBgColor={"bg-[#01F1E3]"} /> */}
         </div>
         <p className="text-[#888] text-sm">{titleTwo}</p>
       </div>
