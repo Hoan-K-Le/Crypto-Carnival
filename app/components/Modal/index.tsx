@@ -1,30 +1,41 @@
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/app/store/store";
 import { fetchCoins } from "@/app/store/CoinsData";
 import { AssetProps } from "@/app/types/asset";
-import Icon from "../Icon/Icon";
+import { CoinAssetProps } from "@/app/types/coin_asset";
 import { fetchCoinAsset } from "@/app/store/CoinAsset";
-import "react-datepicker/dist/react-datepicker.css";
+import {
+  CoinSelectionList,
+  ModalNameDisplay,
+  ModalDatePicker,
+  ModalAmount,
+  ModalHeader,
+} from "./modal_imports";
 
-interface ModalProps {
+type ModalProps = {
   openModal: boolean;
-  setOpenModal: (boolean: boolean) => void;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   setAsset: (value: any) => any;
-}
-
-type SelectedCoinProps = {
-  name: string;
-  coin_price: number;
 };
 
+const initialAsset = {
+  name: "",
+  amount: "1",
+  purchasedDate: new Date(),
+  total_price: 0,
+};
+
+type CoinsProps = {
+  name: string;
+  id: string;
+}[];
+
 function Modal({ openModal, setOpenModal, setAsset }: ModalProps) {
-  const [dropDownCoin, setDropDownCoin] = useState(false);
-  const [selectedCoin, setSelectedCoin] = useState<string>("");
-  const [purchaseDate, setPurchaseDate] = useState<Date | null>(new Date());
-  const [amount, setAmount] = useState<string>("1");
-  const [coins, setCoins] = useState<any>();
+  const [dropDownCoinSelection, setDropDownCoinSelection] = useState(false);
+  const [coinAsset, setCoinAsset] = useState<CoinAssetProps>(initialAsset);
+  const [coins, setCoins] = useState<CoinsProps>([]);
   const currentCurrency = useAppSelector(state => state.currency.currencies);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -39,10 +50,12 @@ function Modal({ openModal, setOpenModal, setAsset }: ModalProps) {
     }
   };
 
-  if (!purchaseDate) return null;
-  const purchaseDateFormat = `${purchaseDate?.getDate()}-${purchaseDate?.getMonth() +
-    1}-${purchaseDate?.getFullYear()}`;
-
+  const formatDate = (date: Date) => {
+    return `${date?.getDate()}-${date?.getMonth() + 1}-${date?.getFullYear()}`;
+  };
+  const { purchasedDate, name, amount } = coinAsset;
+  if (!purchasedDate) return null;
+  const purchaseDateFormat = formatDate(purchasedDate);
   const fetchAsset = async (coinName: string) => {
     try {
       const coinNameLowerCase = coinName.toLowerCase();
@@ -71,21 +84,21 @@ function Modal({ openModal, setOpenModal, setAsset }: ModalProps) {
     }
   };
 
-  const handleViewCoins = () => {
-    setDropDownCoin(prevState => !prevState);
-  };
-
   const handleSelectCoin = (event: React.MouseEvent, coinName: string) => {
     event.stopPropagation();
-    setSelectedCoin(coinName);
-    setDropDownCoin(false);
+    setCoinAsset(prevState => ({ ...prevState, name: coinName }));
+    setDropDownCoinSelection(false);
+  };
+
+  const handleViewCoins = () => {
+    setDropDownCoinSelection(prevState => !prevState);
   };
 
   const handleSaveAsset = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpenModal(false);
-    fetchAsset(selectedCoin);
-    setSelectedCoin("");
+    fetchAsset(name);
+    setCoinAsset(prevState => ({ ...prevState, name: "" }));
   };
 
   useEffect(() => {
@@ -99,65 +112,23 @@ function Modal({ openModal, setOpenModal, setAsset }: ModalProps) {
       } backdrop-blur-sm h-screen w-screen flex items-center z-20 justify-center`}
     >
       <div className=" bg-white rounded shadow-md border p-8 z-20 w-5/12">
-        <div className="flex justify-between items-center mb-5">
-          <p className=" text-xl">Select Coins</p>
-          <button className="text-xl mr-2" onClick={() => setOpenModal(false)}>
-            x
-          </button>
-        </div>
+        <ModalHeader setOpenModal={setOpenModal} />
         <div className="flex gap-10">
-          <div className="flex flex-col items-center w-5/12 gap-2 py-20 px-16 bg-[#6161D6] bg-opacity-40 rounded-xl shadow">
-            <img
-              src="https://placeholder.com/200/300"
-              alt="placeholder"
-              className="h-[50px] w-[50px] block"
-            />
-            <div className="flex items-center gap-2 mt-4">
-              <p className="uppercase text-3xl text-white">bitcoin</p>
-              <p className="uppercase text-3xl text-white"> (btc)</p>
-            </div>
-          </div>
+          <ModalNameDisplay name={name} />
           <div className="flex flex-col justify-between w-7/12">
             <div className="flex flex-col gap-6">
-              <div
-                onClick={handleViewCoins}
-                className="cursor-pointer select-none py-2 px-4 relative border rounded-xl flex justify-between w-full items-center"
-              >
-                <p className="w-full text-left">
-                  {selectedCoin ? selectedCoin : "Select Coin"}
-                </p>
-                <Icon iconVariant="arrowDown" />
-                <div
-                  className={`absolute ${
-                    dropDownCoin ? "flex" : "hidden"
-                  }  bg-white bg-opacity-70 rounded-xl top-10 left-0 right-0 text-center flex-col justify-between overflow-y-auto h-[100px]`}
-                >
-                  {coins?.map((coin: any) => (
-                    <button
-                      onClick={e => handleSelectCoin(e, coin?.id)}
-                      key={coin.id}
-                      value={coin?.name}
-                    >
-                      {coin?.id}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="py-2 px-4 w-full border rounded-xl">
-                <input
-                  type="text"
-                  placeholder="Purchase Amount"
-                  className="w-full focus:outline-none"
-                  value={amount}
-                  onChange={e => setAmount(e.target.value)}
-                />
-              </div>
-              <div className="w-full py-2 px-4 border rounded-xl">
-                <DatePicker
-                  selected={purchaseDate}
-                  onChange={date => setPurchaseDate(date)}
-                />
-              </div>
+              <CoinSelectionList
+                coinAsset={coinAsset}
+                handleSelectCoin={handleSelectCoin}
+                coins={coins}
+                handleViewCoins={handleViewCoins}
+                dropDownCoinSelection={dropDownCoinSelection}
+              />
+              <ModalAmount setCoinAsset={setCoinAsset} amount={amount} />
+              <ModalDatePicker
+                setCoinAsset={setCoinAsset}
+                purchasedDate={purchasedDate}
+              />
             </div>
             <div className="flex items-center justify-between gap-2 ">
               <button
