@@ -10,7 +10,7 @@ function ProgressBar({
   return (
     <div className={`w-full h-[10px] rounded-xl  ${changeBgColor}`}>
       <div
-        className={`h-[10px] rounded-xl ${changeBgColor} `}
+        className={`h-[10px] rounded-xl ${changeBgColor}`}
         style={{
           width: `${data || 0}%`,
         }}
