@@ -123,71 +123,6 @@ export default function BarChart({ selectedDay }: BarChartProps) {
     return `${currentCoins[index].id} (${currentCoins[index].symbol})`;
   };
 
-  const fetchChartData = async (coin: string, index: number) => {
-    if (!currentCoins[0]) return;
-    try {
-      const chartData = await dispatch(
-        fetchGraphData({
-          currency: currentCurrency,
-          name: coin,
-          days: selectedDay,
-          daily: getDaily(selectedDay),
-        })
-      );
-      if (!coin) return;
-      if (fetchGraphData.fulfilled.match(chartData)) {
-        const currentDate = new Date();
-        const getCurrentData = chartData.payload.total_volumes.filter(
-          (volumeData: [number, number]) => {
-            const volumeDate = new Date(volumeData[0]);
-            return currentDate.toDateString() === volumeDate.toDateString();
-          }
-        );
-        const volume = chartData.payload.total_volumes.map(
-          (volume: [number, number]) => volume[1]
-        );
-        const date = chartData.payload.total_volumes.map(
-          (volumeDate: [number, number]) => volumeDate[0]
-        );
-
-        setCoins(prevState =>
-          prevState.map((c, idx) => {
-            const currentCoin = currentCoins[idx];
-            const isMissing = !currentCoin || !currentCoin.id;
-            const defaultCoinData = {
-              current_date: "",
-              current_price: 0,
-              dates: [],
-              prices: [],
-              coin_name: "",
-            };
-            if (isMissing)
-              return { ...c, ...defaultCoinData } as InitialCoinProps;
-            const matchingCoin = c.name === coins[index].name;
-            const updatedCoinData = {
-              current_price: getCurrentData.length
-                ? getCurrentData[0][1]
-                : null,
-              current_date: getCurrentData.length ? getCurrentData[0][0] : null,
-              prices: volume,
-              dates: date,
-              coin_name: getCoinName(index),
-            };
-            if (matchingCoin)
-              return {
-                ...c,
-                ...updatedCoinData,
-              } as InitialCoinProps;
-
-            return c;
-          })
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const createGradient = (
     ctx: CanvasRenderingContext2D,
     start: string,
@@ -202,6 +137,73 @@ export default function BarChart({ selectedDay }: BarChartProps) {
   };
 
   useEffect(() => {
+    const fetchChartData = async (coin: string, index: number) => {
+      if (!currentCoins[0]) return;
+      try {
+        const chartData = await dispatch(
+          fetchGraphData({
+            currency: currentCurrency,
+            name: coin,
+            days: selectedDay,
+            daily: getDaily(selectedDay),
+          })
+        );
+        if (!coin) return;
+        if (fetchGraphData.fulfilled.match(chartData)) {
+          const currentDate = new Date();
+          const getCurrentData = chartData.payload.total_volumes.filter(
+            (volumeData: [number, number]) => {
+              const volumeDate = new Date(volumeData[0]);
+              return currentDate.toDateString() === volumeDate.toDateString();
+            }
+          );
+          const volume = chartData.payload.total_volumes.map(
+            (volume: [number, number]) => volume[1]
+          );
+          const date = chartData.payload.total_volumes.map(
+            (volumeDate: [number, number]) => volumeDate[0]
+          );
+
+          setCoins(prevState =>
+            prevState.map((c, idx) => {
+              const currentCoin = currentCoins[idx];
+              const isMissing = !currentCoin || !currentCoin.id;
+              const defaultCoinData = {
+                current_date: "",
+                current_price: 0,
+                dates: [],
+                prices: [],
+                coin_name: "",
+              };
+              if (isMissing)
+                return { ...c, ...defaultCoinData } as InitialCoinProps;
+              const matchingCoin = c.name === coins[index].name;
+              const updatedCoinData = {
+                current_price: getCurrentData.length
+                  ? getCurrentData[0][1]
+                  : null,
+                current_date: getCurrentData.length
+                  ? getCurrentData[0][0]
+                  : null,
+                prices: volume,
+                dates: date,
+                coin_name: getCoinName(index),
+              };
+              if (matchingCoin)
+                return {
+                  ...c,
+                  ...updatedCoinData,
+                } as InitialCoinProps;
+
+              return c;
+            })
+          );
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     const fetchData = async () => {
       if (!currentCoins[0]) return;
       const coinsForFetching: {
